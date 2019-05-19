@@ -11,31 +11,29 @@
 
 % No symbols, formulas, superscripts, or Greek letters are allowed
 % in your title.
-\title{The Title Of The Dissertation}
+\title{On Gas Station Skimmer Detection}
 
-\author{Your Name Here}
-\degreeyear{\the\year}
+\author{Maxwell Troy Bland}
+\degreeyear{2019}
 
 % Master's Degree theses will NOT be formatted properly with this file.
-\degreetitle{Doctor of Philosophy}
+\degreetitle{Master's of Computer Science}
 
-\field{Mathematics}
-\specialization{Anthropogeny}  % If you have a specialization, add it here
+\field{Computer Science}
+% \specialization{}  % If you have a specialization, add it here
 
-\chair{Professor Chair Master}
+% \chair{Professor Kirill Levchenko}
 % Uncomment the next line iff you have a Co-Chair
 % \cochair{Professor Cochair Semimaster}
 %
 % Or, uncomment the next line iff you have two equal Co-Chairs.
-%\cochairs{Professor Chair Masterish}{Professor Chair Masterish}
+\cochairs{Professor Kirill Levchenko}{Professor Aaron Schulman}
 
 %  The rest of the committee members  must be alphabetized by last name.
 \othermembers{
-Professor Humor Less\\
-Professor Ironic Name\\
-Professor Cirius Thinker\\
+Professor Deian Stefan\\
 }
-\numberofmembers{4} % |chair| + |cochair| + |othermembers|
+\numberofmembers{3} % |chair| + |cochair| + |othermembers|
 
 
 %% START THE FRONTMATTER
@@ -64,7 +62,7 @@ Professor Cirius Thinker\\
 %
 %
 \begin{dedication}
-  To two, the loneliest number since the number one.
+    To criminals.
 \end{dedication}
 
 
@@ -92,9 +90,8 @@ Professor Cirius Thinker\\
 %  The same choices that applied to the dedication apply here.
 %
 \begin{epigraph} % The style file will position the text for you.
-  \emph{A careful quotation\\
-  conveys brilliance.}\\
-  ---Smarty Pants
+  \emph{If literature stays away from evil, it rapidly becomes boring.}\\
+  --- Georges Bataille 
 \end{epigraph}
 
 % \begin{myepigraph} % You position the text yourself.
@@ -124,10 +121,13 @@ Professor Cirius Thinker\\
 %  the OGS Formatting Manual for more information.
 %
 \begin{acknowledgements}
- Thanks to whoever deserves credit for Blacks Beach, Porters Pub, and
- every coffee shop in San Diego.
+ Thanks to Nishant Bhaskar, without whom this work would have never
+    come to fruition. Thanks to Kirill and Aaron, for their
+    guidance, writing, good humor, and motivation of this research. 
 
- Thanks also to hottubs.
+ Thanks also to the inspectors leveraging Bluetana in their unending hunt for skimmers.
+    You are the real heroes. Thank you for sharing your stories and being open to try 
+    the tech of a couple So-Cal punks.
 \end{acknowledgements}
 
 
@@ -138,13 +138,10 @@ Professor Cirius Thinker\\
 %
 \begin{vitapage}
 \begin{vita}
-  \item[2002] B.~S. in Mathematics \emph{cum laude}, University of Southern North Dakota, Hoople
-  \item[2002-2007] Graduate Teaching Assistant, University of California, San Diego
-  \item[2007] Ph.~D. in Mathematics, University of California, San Diego
+  \item[2018] B.~S. in Computer Science, University of California, San Diego
 \end{vita}
 \begin{publications}
-  \item Your Name, ``A Simple Proof Of The Riemann Hypothesis'', \emph{Annals of Math}, 314, 2007.
-  \item Your Name, Euclid, ``There Are Lots Of Prime Numbers'', \emph{Journal of Primes}, 1, 300 B.C.
+  \item Maxwell Bland, ``On the Efficacy of Publicating'', \emph{Annals of Filler Text}, 314, 2007.
 \end{publications}
 \end{vitapage}
 
@@ -155,7 +152,14 @@ Professor Cirius Thinker\\
 %   The abstract may continue to a second page if necessary.
 %
 \begin{abstract}
-  This dissertation will be abstract.
+  This thesis explores the detection of skimming devices installed in fuel station gas pumps. It begins
+    with a survey of current techniques for skimmer detection as practiced by investigators in the 
+    Arizona Weights and Measures Department. Following this, it describes the common features of
+    internal fuel pump skimmers and the design of a mechanism for detection. This thesis concludes with
+    the description of the implementation of such a mechanism, codenamed Bluetana, which was used
+    to recover more than fifty skimmers in the 2018 and 2019 calendar years.  This thesis also includes 
+    remarks on the design of crowdsourced applications and an analysis of the development pipeline 
+    for a pseudo-sensor network of android cellphones. 
 \end{abstract}
 
 

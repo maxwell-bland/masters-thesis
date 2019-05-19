@@ -1,0 +1,408 @@
+\chapter{Understanding Field Agent Behavior}\label{chap:2}
+\begin{quote}
+    ``It is a capital mistake to theorize before one has data.'' \\
+    --- Sir Arthur Conan Doyle, \emph{Sherlock Holmes}
+  \end{quote}
+    This section provides insight into and an overview of current skimming investigative
+    techniques as performed by the Arizona Department of Weights and Measures (AZDWM).
+    %
+    It begins with an overview of the documents AZDWM uses to record the investigations
+    performed and the document content.
+    %
+    The chapter then addresses which data regarding skimming investigations can and
+    cannot be acquired from these documents.
+    %
+    Following this, it transitions to a discussion of the method of data acquisition.
+    %
+    Beyond providing insight on the techniques by which this data may be classified and
+    analyzed, the first half of this chapter discusses the technical challenges involved
+    with semi-structured exploratory data analysis. 
+
+    This chapter functions as a \emph{case study} from which more general methods may be
+    inferred.
+    %
+    It stands in contrast to the work of John Tukey's EDA \cite{}.
+    %
+    Rather than attempting to provide universal techniques, the mistakes and successes
+    noted here are pragmatic and instructional in nature.
+    %
+    By providing insight on some of the ways \emph{not} to do data analysis, it
+    circumscribes the nature of this detective work for which general principles
+    may not exist.
+    %
+    Every data set is different, but one can learn to execute the art of data analysis
+    from those who have executed before, and avoid the common traps by memory of
+    other's anecdotes.
+    %
+    As a result, the techniques presented here will age with time, however, the lessons
+    will not.
+
+    Collection and analysis of the data provided by AZDWM proved to be difficult, but
+    had two primary benefits: the first being a categorical understanding of current
+    investigative techniques, and the second an understanding of potential avenues of
+    detection.
+    %
+    Photos included in the reports also provided insight into skimmer construction,
+    and informed the design of an application for the detection of skimmers during
+    inspections.
+
+    The chapter closes with a discussion of other work related to data analysis and
+    the lessons learned during the performance of this study.
+    %
+    It points to several open problems which will continue to plague this type of work
+    in the near future.
+    %
+    The foremost of which is the design of interfaces and tools for the automated
+    classification of large, unstructured data-sets.
+    %
+    Another fundamental challenge consists of designing tools and methodologies for
+    the inclusion of semantic models in optical recognition of corpora.
+    
+    \section{Survey Background}
+
+    Over the course of the past nine years, the AZDWM has been collecting internal
+    reports and exposing them using an externally queriable web interface. 
+    Table X provides descriptive statistics of the entire AZDWM dataset. The oldest
+    report is from July 2010, and there are 51,753 PDFs available in total.
+
+    PDFs from the AZDWM are stored on a queriable web interface at
+    \url{https://ctutools.azda.gov/dwm/pv/inspection_search.asp}, however, during the
+    course of this study, we found that this web interface did not include all records,
+    and it was easier to pull reports from \url{https://ctutools.azda.gov/PdfOriginals/}
+    via an html parser and batched \texttt{wget} requests.
+    %
+    The reports contain data from internal powerpoints on various subjects to inspections
+    done of gas stations for vapor, correct convience store advertised prices, and other
+    inspections performed by Weights and Measures staff.
+    %
+    For the purposes of this study we are most concerned with the reports on skimming,
+    however, it is not immediately clear from the dataset which reports pertain to skimming. 
+    %
+    PDFs follow a naming scheme of \texttt{\{BMF \#\}-\{Inspection \#\}.(pdf|PDF)}, wherein
+    a majority of reports (\upperAZDWMpdfs) follow the upper-cased extension convention.
+    %
+    A BMF, or Business Master File, number is a unique identifier given to each business
+    owning a metering device used to charge for goods or services \cite{}
+    \url{https://agriculture.az.gov/weights-measures/licensing}.
+    %
+    Thus, in order to classify and analyze these reports, one must look at the PDFs themselves,
+    which contain an ``origin'' header that gives further details on the inspection report.
+
+    The goal for this survey is ultimately to discover how inspections for skimmers are performed,
+    their rate of effectiveness, and the current methodologies of skimmer detection.
+    %
+    By extracting from the data a frequency of skimming discovery, it will be possible to quantify the
+    probability of skimmer occurrence.
+    %
+    Additionally, by looking into the data for methodologies of inspection, we can find clues
+    as to the nature of skimming devices, such as the commonality of overlay versus internal
+    skimmers.
+    %
+    We will also be able to see the habits of AZDWM inspectors: whether they check for internal
+    skimmers more than external skimmers, whether they rigorously check all pumps, how often
+    their plans are foiled, and other questions.
+    %
+    An understanding of this dataset in greater depth has led to better insight on the
+    problem of skimming and many fruitful ideas for mitigation \footnote{It is trivial to
+      see the value of exploratory data analysis as a first step in the \emph{design} process,
+      even moreso, perhaps, than the descriptive process.}.
+
+    We find in the reports that inspectors oftentimes will not check pumps if there are security
+    seals, special keys, alarms, or ``non-skimmable'' pump types.
+    %
+    Some methodologies of inspection are sound, others are not.
+    %
+    A few reports mention only checking for external skimmers, completely ignoring the internal
+    variety.
+    %
+    Additionally, some reports may have included a check for skimmer, and others may not have;
+    document structure is ambiguous.
+    %
+    Figure~\ref{fig:inspection-with-skimmer} demonstrates an inspection of fueling devices which
+    led to a skimmer, and Figure~\ref{fig:inspection-without-skimmer} shows the opposite.
+    %
+    The only noticable difference between these documents relating to skimmers is the note that
+    in one case they have found the malicious devices, and in the other they have not.
+    %
+    The AZDWM site notes that inspections from skimmers are recommended \cite{}, however,
+    our conversations with authorities inside the department have indicated that a skimmer
+    check is always performed.
+
+    It is unclear that information related to the exact inspection methodology is contained
+    within the report documents, though are some hints in the documents' structure.
+    %
+    For instance, vapor recovery\footnote{Checking the pumps to make sure they do not leak
+      gasoline vapors into the atmosphere.} reports contain a pre-inspection checklist,
+    which includes a check for skimmers (Figure~\ref{fig:check-for-skimmers}. 
+    %
+    In cases such as this, answering questions related to the data set requires the exploration
+    of non-primary sources; never be afraid to directly google.
+    %
+    In this case, the AZDWM site includes a description of their scheduled inspections:
+    %
+    \quote{ In addition to verifying accurate measurement, the Division reviews the equipment
+      for safety, conducts fuel quality analysis, confirms proper octane and ethanol levels,
+      audits recordkeeping, checks for illegal credit card skimming devices in the pump, proper
+      consumer labeling, and monitors the underground storage tanks for water and environmental
+      compliance \cite{}\url{https://agriculture.az.gov/weights-measures/inspection-results}.} 
+    %
+    Thus, we can be assured that all scheduled inspections included within the data include a
+    check for skimming devices.
+
+    The structure of the report documents also reveals some details about the structure of skimmers.
+    %
+    A checkbox on some skimmer inspection reports has inspectors tag whether a skimmer is GSM or
+    Bluetooth enabled, as seen in Figure~\ref{fig:bluetooth-or-gsm}.
+    %
+    Of course, it is unlikely that the inspectors have a perfect sense of this; reports indicate
+    that they do not unwrap the device from the encasing tape in order to preserve fingerprints
+    \cite{}, and instead bag the devices as evidence for local police officers.
+    %
+    The documents also contain hints regarding potential features of Bluetooth-enabled skimming
+    devices, such as MAC addresses and skimmer names (Figures~\ref{fig:mac-address-report}
+    and~\ref{fig:skimmer-name-report}.
+    %
+    Of course, the accuracy of these claims may be taken into question, but they do provide an
+    adequate starting point for the development of a solution to the problem of skimming.
+
+    \subsection{Understanding the Documents}
+
+    Inspection reports have \numorigins different origin headers; statistics and descriptions
+    of the different report types are provided in Table~\ref{tab:explanations-of-origins}.
+    %
+    The details of which origin corresponded to which type of inspection where accumulated
+    via a sampling of the various document types.
+    %
+    Since the different inspection origin types have different attached forms, it is possible
+    to differentiate the meaning of the different origins from the primary data source itself.
+    %
+    Had this information been difficult to attain (meaning a thirty minutes to an hour spent
+    searching to no avail), it would have been suggested to attain it from a secondary source.
+    %
+    Of course, performing this analysis required exploration to determine the different document
+    origins, contained in the following code:
+
+    \lstset{language=Python}
+    \begin{lstlisting}
+    def origin(text_data):
+      orig_str = re.findall(
+          "(origin|ongin|Onegin)(:?\s*_?)(\S+)", text_data, re.IGNORECASE
+      )
+      if orig_str:
+          for match in orig_str:
+              try:
+                  match = match[2][:3]
+              except Exception:
+                  continue
+              if match in ORIGIN_TYPES:
+                  return match
+      return None
+    \end{lstlisting}
+
+    By first building a regular expression to extract the origin header from the document, it
+    became possible to ``handle'' the documents.
+    %
+    The steps included figuring out which report types existed, were prevalent, and a sampling of
+    the documents from each origin for further analysis.
+    %
+    Of course, the implicit first step was to randomly sample a few of the documents without
+    knowing that the origin header even existed, and perform the analysis to realize the header's
+    importance.
+
+    From this analysis, it is clear that some inspections are explicitly for skimmers, others are
+    not.
+    %
+    It is also possible to extract some descriptive statistics, such as the fact that the first
+    explicit skimmer investigation was in the year \firstskimmerinspectionyear.
+    %
+    Additionally, the data that \emph{can} be extracted from the documents also becomes clear.
+
+    Notice the number of ``unparsable'' documents from Table~\ref{tab:explanations-of-origins};
+    where does this number come from?
+    %
+    The reason is that some reports are either hand written, or just photos of the report form,
+    such as in Figure~\ref{fig:photo-of-report-form}.
+    %
+    This makes a simple \texttt{pdftotext} analysis of the AZDWM inspection reports impossible.
+    %
+    Once this unique feature of the data is discovered, the characterization of it becomes tantamount.
+    %
+    Documents with handwritten sections or poor optical character recognition (OCR) may be identified
+    by the presence of difficulty in using regular expressions to parse the data or by the presence
+    of unprintable characters.
+    %
+    In the former case, it is important to ensure that the difficulty does not occur as a result of
+    an unknown data type; this may be handled by sampling from the error cases.
+    %
+    In the latter case, the data must be cleaned in a fully automated, semi automated, or manual
+    fashion\footnote{Hereafter abbreviated FSMA (fully, semi, manual analysis)}.
+
+    A case analysis of the initial set of PDFs led to the characterization presented in
+    Table~\ref{tab:num-failed-regex-ocr} when examining the origin header.
+    %
+    The table is broken down by year for sake of characterizing AZDWM behavior over time.
+    %
+    Although this is not pertinent, it demonstrates the art in exploratory data analysis:
+    oftentimes one must find independent and dependent variables via intuition.
+    %
+    We can see that there was a clear transition around \yearofhandwrittentotyped of handwritten
+    to typed reports.
+
+    At this point, a judgment call must be made as to whether additional effort should be spent
+    to analyze these additional documents.
+    %
+    If the purpose is complete understanding of the exact statistics of the data set, a mixture
+    of FSMA will be needed to complete the analysis.
+    %
+    The time that this will take is dependent upon the technologies used, the data set, and the
+    care taken in isolating the data into the three different ``analytic cases'' of a combinational
+    FSMA.
+    %
+    One mistake of this study was to not properly understand and segment the data which needed
+    additional time to process: the choice was blindly made to perform OCR on all the documents,
+    leading to \ectwohoursspent hours of Amazon EC2 time spent on a 72 core machine, a monetary
+    cost of \ectwodollarsspent.
+    %
+    A consideration of the segments of data needed for analysis continued to be important.
+    %
+    At a later time, when cloning a database of records collected from the application described
+    in Chapter~\ref{chap:3}, it was noticed that only records after a certain point in time were
+    needed, reducing the time of the query significantly.
+
+    Still, the OCR was effective; after performing this analysis, the number of documents with
+    an unrecognized origin header dropped \amountofparsableoriginsafterocr.
+    %
+    The OCR was performed using the tool \texttt{ocrmypdf}, which builds upon the Tesseract library.
+    %
+    Despite these final statistics, our initial OCR run did not improve the number of parsed origin
+    headers as much as inspected.
+    %
+    It was later found that additional flags were needed for document cleaning and orientation
+    detection\footnote{\texttt{-clean} and \textt{--rotate-pages} respectively.}.
+    %
+    This additional run of OCR wasted time and led to a short period of insecurity relating to
+    the ability to parse the data in an automated fashion.
+    %
+    It is important to understand \emph{all} the features of the tools used for data extraction
+    when performing analysis and the number of errors is outside of desired bounds.
+    %
+    In fact, it is possible that adding additional flags to Tesseract's OCR may have made the
+    data analysis far more accurate\footnote{Of course, there is also a tradeoff of time spent
+      learning the technology, making this a judgment call.}. 
+    %
+    Additionally, this analysis demonstrates the importance of knowing when FSMA is failing, so
+    steps may be taken to prevent wasting time and inaccuracies.
+
+    Layout recognition for nearly all documents by pdftotext made this entire process very
+    difficult
+
+    Thus, I built a tool, data-extract-PDF, which allows the user to select sections of text
+    and quickly iterate through documents, extracting just the snippets desired.
+
+    Now being used in other research projects which feature document snippet extraction.
+
+    What does the content of the documents tell us?
+
+    We can figure out how many inspections were successful.
+
+    Figuring out whether there was even an inspection.
+
+    Have the ground truth data directly from Arizona, let us check the accuracy of different
+    methods.
+
+    - Reports with the word skimmer in them
+    - Reports with a combination of phrases in them
+    - Random sampling by hand.
+    - Manual inspection of reports by hand.
+
+    Using EC2 for document OCRing. Lessons in efficiency and time. Do data analysis in correct
+    increments.
+
+    Misleading: often inspections are hinted by PD, service techs, or gas station owners.
+
+    No linear separability between report types: SKIs and COMs are triggered by complaints.
+
+    No consistency within a given document class: vapor reports do and don't have a
+    pre-inspection checklist.
+
+    Figuring out the number of hinted reports.
+
+    - Is it possible in an automated fashion?
+    - The need for a semantic text recognition system for document classification
+    - Approaches based upon part-of-speech tagging
+    - Need to infer missing data
+    - Need OCR to be able to understand document ``positioning'' and ``grouping'' of data on page
+    - Related work
+    - Manual sampling to determine the number of hinted reports.
+    - Statistical soundness
+    - Actual number.
+
+    Inspection time analysis
+
+    - Handwritten and non-handwritten.
+    - Application of the methods above, comparison of accuracy.
+
+    Examination of inspector behavior via document analysis
+    - Searching for keywords, may be biased, but provides information
+    - Randomly sampled reports contain little information.
+    - Sampling based upon information entropy within a sentence, number of parts
+    of speech, etc.
+
+    Understanding skimmer construction.
+    - Photos, descriptions of skimmers
+    - Data from within the report written
+    - Neccessary checklists
+
+    Looking for documents that have a new formal structure: information in the document
+    class, rather than input.
+    - Look for word overlap in the document pages, classify by levenstien distance
+
+    Understanding Inspector behavior: we know they don't check if they dont need to, but
+    do sometimes if they are instructed to.
+
+    - Always will be errors. The law of large numbers assumes these smooth out in a large
+    enough sample size
+
+    - Plots of number of inspections per inspector per day
+    - Plots of number of inspections a given gas station gets in a period of time
+    - Plots of the data which is unclassified
+    - Plots of the types of inspections
+    - Looking at whether inspectors actually inspect
+
+    Different inspectors write reports in different ways, but these number of ways becomes
+    constant in a larger dataset. Could use machine learnign to learn one inspector's style,
+    there will be oddities, yada...
+
+    We can leverage the fact that these inspectors are going to thousands of gas stations
+    and manually inspecting the pumps in order to get data on the nature of skimmers, and
+    help to find a few.
+
+    The lesson learned: to solve a problem, test your target population.
+
+    Design an application, Bluetana, which serves to passively and actively detect skimmers,
+    allowing inspectors to more easily check the pumps, avoiding errors, cover missed ground.
+
+    As inspectors collect data, Bluetana can learn new features and attempt more ways of
+    finding skimmers.
+
+    As criminals adapt, WM staff will still be the ones going to stations. This would actually
+    make the deployment of a persistent solution not too hard.
+
+    Related work, summary, open problems, future work, acknowledgements, philosophical lessons
+    learned.
+        \subsection{Document Types}
+        \subsection{Document Content}
+        \subsection{Data Acquisition}
+    \section{Technical Challenges: Data Classification}\label{sec:tech-challenges}
+        \subsection{Optical Character Recognition}
+        \subsection{Text Content Classification}
+        \subsection{Inspection Time Analysis}
+    \section{Evaluating Inspector Behavior}\label{sec:eval-insp-beha}
+    \section{Understanding Skimmer Construction}
+    \section{Potential Avenues of Detection}
+    \section{The Design of Bluetana}
+\section{Related Work}
+\section{Summary}
+\section{Open Problems}
+\section{Acknowledgements}
+

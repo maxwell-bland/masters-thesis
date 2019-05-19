@@ -1,0 +1,114 @@
+\chapter{Introduction}\label{chap:1}
+\begin{quote}
+    ``In conclusion, \emph{Rhagoletis pomonella} may not be that unconventional after all.'' \\ 
+---Jefferey Feder, \textit{The Apple Maggot Fly, Rhagoletis Pomonella}
+\end{quote}
+A skimming device typically consists of a microcontroller
+attached to an EEPROM for recording credit card data exfiltrated from a Point-of-Sale
+(POS) system~\cite{}. Prior work have developed mechanisms for the detection of external magnetic stripe 
+based skimmers, which collect sensitive information by adding a second magnetic read head to the front
+of the existing magnetic read head of a gas pump, ATM, or other payment terminal~\cite{}. However, no work 
+has been done to survey current law enforcement investigative mechanisms. Additionally, no work has been done 
+to study the possibility of detecting internal skimmers, a variety installed within the casing of the POS system, 
+whereby data is exfiltrated through the use of a wireless module and collected by connecting into wires responsible
+for the transmission of sensitive card information~\cite{}. This thesis provides both a survey of current skimmer 
+investigative techniques and details the design of an application for the detection of internally installed
+skimming devices. The resultant application, \emph{Bluetana}, was deployed across four states and more than thirty 
+investigators and acts to ``crowdsource'' skimmer detection. So far, Bluetana has detected over
+fifty skimming devices. Each skimmer makes around \$15,000 per day,\footnote{The typical card can be frauded 
+for \$500, and the typical skimmer captures 30 cards per day.} indicating this research has prevented hundreds of 
+thousands to millions of dollars in fraudulent charges. 
+
+    Chapter~\ref{chap:1} of this thesis addresses the issue of skimming and provides some background on current methodologies
+for skimmer detection. Chapter~\ref{chap:2} focuses on a survey of current skimmer investigative techniques and provides
+insight into the methods by which skimmers may be found. Chapter~\ref{chap:3} describes the implementation and design of 
+an application for skimmer detection within the Android operating system. Chapter~\ref{chap:4} concludes and addresses the epistemological
+space surrounding the collection of data from heterogenous sources and the development of crowdsourced applications.
+
+\section{The Issue of Skimming}
+
+While hacking a database might give adversaries access to password hashes eventually leading to a compromise of a bank account,
+some opt for a physical route: skimming. The profitability of the installation of physical devices for fraud inside gas station 
+sale terminals has driven a proliferation of the market, with 972 devices recovered from Florida and 148 in Arizona in 2018~\cite{}.
+Each of these devices can obtain around 30 unique cards, each the potential source of hundreds of dollars in fraud, per 
+day~\cite{}. Despite the financial cost of these devices to card issuers and merchants, skimmers evade detection due both to
+defenses added by criminals and the sparseness of the number of installations when compared to the total number of stations in 
+a state. As we will see in Section~\ref{sec:eval-insp-beha}, reports from Arizona showed the percentage of stations in the state
+hosting skimmers to be below \emph{X}\%. 
+
+The typical consumer is also incapable of protecting themselves from internal skimmers without the leveraging of technology, as 
+access to the internals of a pump is usually protected by a lock. It should be noted that this is not a problem for criminals 
+since most Gilbarco Pump locks have a universal key\cite{}, and these pumps are installed in around 70\% of gas stations, a result
+discovered via survey of 0.5\%  of the gas stations in the United States via Google Maps performed in the course of this research.
+
+Manual inspection of pump internals without the assistance of technology is not effective
+either, often taking around thirty minutes to complete with a success rate below 4\%. Hence, there is an \emph{issue of skimming} 
+which should be addressed, as it is funding a multi-million dollar economy on the backs of legitimate transactions, leading to 
+market inefficiencies~\cite{}. The hypothesis of this thesis and related work is that the nature of internal skimmer 
+installation makes data exfiltration necessary, therefore creating methods of detection. 
+
+At the current point in time, discussions with law enforcement have revealed that the majority of skimmers use Bluetooth modules. 
+Bluetooth is then used by a ``mule'', or hired hand, to connect and collect stolen card information from the device~\cite{}.
+This observation motivates the design and implementation of an application which uses features of Bluetooth for the detection
+of skimmers, hence the development of Bluetana. The efficacy of this application can serve as a starting point for continued
+research in the area of physical card fraud. This thesis therefore represents a ``case study'' which lends itself to more
+general conclusions and a detailed understanding of the problem space.
+
+\section{Methodologies of Detection}
+
+Currently the primary method of skimmer detection is the via physical inspection of the gas pump itself. Inspectors will go
+to gas stations either as a result of hinting on behalf of a credit company, law enforcement, or gas station owner and open
+each pump to look for skimmers. This process is effective, although imperfect as some skimmers are disguised or hidden within
+the pump infrastructure itself, often covered in tape the same color as the ribbon wire they are connected to, such as in
+Figure~\ref{fig:taped-skimmer}. In some cases during our testing of Bluetana, law enforcement were not able to find the skimmer
+by physical means, although it was detected by the application, because the device had been hidden in a crevice of the machine.
+
+\begin{figure}
+  \centering
+    \includegraphics[width=0.5\textwidth]{./pics/skimmerinpump.png}
+  \caption{A skimmer taped the same color as the ribbon wire it is attached to.}
+  \label{fig:taped-skimmer}
+\end{figure}
+
+There has been progress in the development of applications and tools for the detection of skimmers without extensive physical
+inspection. In 2018, the Skimreaper tool was developed for detecting the external variety of skimmer via a detection of the secondary
+read head that many skimmers of this type leverage \cite{}. Additionally, some pump manufacturers are advertising alarm systems which
+alert the owner and law enforcement when pump doors are opened \cite{}. Several applications for the detection of Bluetooth based
+skimmers exist on the app market for Android currently, however, they do not leverage the extensive data analysis that Bluetana does,
+and have been shown to be ineffective \cite{}. Skimmers using other wireless technologies, such as GSM, have also been found \cite{}, but
+discussions with law enforcement have indicated that these devices are much less common than Bluetooth technologies, and an extensive
+listing of detection mechanisms for this species of devices is outside of the scope of this thesis.
+
+\section{Contributions}
+
+This thesis explores the motivation and development process of a Bluetooth-based skimmer detection mechanism. The primary contributions
+of this work are a survey of current detection methodologies and a discussion of the implementation of the Bluetana application. It also
+includes insights into the development of crowd-sourced applications and heterogeneous data analysis. This work has also had the practical
+impact of discovering over fifty skimming devices and preventing hundreds of thousands to millions of dollars in fraud. The application
+continues to see use by government inspectors across the United States.
+
+    \subsection{Survey of Current Skimmer Detection Methodologies}
+
+    Chapter~\ref{chap:2} contains a survey of hundreds of skimming inspection documents from the Arizona weights and measures department
+    over the course of the 2016 through 2019 calendar years. It addresses the nature of the data and data acquisition, as well as internal
+    classification methodologies for skimmer inspection documents. This heterogeneous data source required a relatively sophisticated
+    technical pipeline to classify and understand, the details of which will be noted in Section~\ref{sec:tech-challenges}. An analysis
+    of the data acquired will be noted in the sections following this, and will provide the motivation for the development of Bluetana.
+    Discussion of the lessons learned during this process will be withheld for Section~\ref{sec:effective-data-analysis}.
+
+    \subsection{Design and Implementation of Bluetooth Skimmer Detection}
+
+    Chapter~\ref{chap:3} details the design of Bluetana as well as the systems which enable back-end data collection and analysis. It begins
+    by describing the implementation of the application using the Android SDK, including the aspects of the Bluetooth protocol leveraged
+    in the detection of skimmers. The chapter also describes the collection of data, features added to the application to make running
+    the system more streamlined, and android application life-cycle management. This discussion will conclude with some of the open
+    problems and drawbacks to using a crowdsourced android application in skimmer detection.
+
+\section{Research Scope}
+
+Skimming detection remains an open and important problem, and is the source of millions of dollars worth of fraud each year \cite{}. This
+work describes current methods of detection and proposes a novel space of exploration. The lessons contained herein can provide motivation
+for the next wave of research into the prevention and detection of these devices, ideally low cost, persistent wireless traffic monitors
+which can be installed at a majority of gas stations world-wide. For now, Bluetooth-oriented skimmer detection remains a promising and effective
+improvement over traditional physical inspection, and, along with other tools such as SkimReaper \cite{}, can provide the first line of defense
+for consumers, fuel station owners, and credit companies against the criminal element.
