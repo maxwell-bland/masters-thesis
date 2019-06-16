@@ -479,7 +479,7 @@
     {\bfseries
      {\@title} \par}
     \bigskip \medskip
-    A dissertation submitted in partial satisfaction of the \par
+    A thesis submitted in partial satisfaction of the \par
 	\smallskip
     requirements for the degree \par
 	\smallskip
@@ -548,7 +548,7 @@ All rights reserved.}
 \begin{center}
 \vspace{.25in}
 \vspace{\@approvalspace}
-\makebox[4in][l]{\parbox{4in}{\fmfont The dissertation of {\@author}
+\makebox[4in][l]{\parbox{4in}{\fmfont The thesis of {\@author}
 is approved, and it is acceptable in quality and form for publication
 on microfilm and electronically: }}\\
 \begin{tabular*}{4in}[t]{r@{\extracolsep{\fill}}r}
@@ -691,7 +691,7 @@ on microfilm and electronically: }}\\
 %
 % The ABSTRACT environment allows for multi-page abstracts which,
 % in accordance with UC rules, is numbered separately from the rest
-% of the rest of the dissertation in Arabic.  It requires definition
+% of the rest of the thesis in Arabic.  It requires definition
 % of the \title, \author, \degreetitle, \field, \campus, and \chair macros.
 % The page numbering is in the usual sequence for UCSD OGS--WBB.
 %
@@ -745,7 +745,7 @@ on microfilm and electronically: }}\\
 % The FRONTMATTER environment makes sure that page numbering is set
 % correctly (roman, lower-case, starting at 3) for the front matter
 % that follows the abstract.  It also resets page-numbering for
-% the remainder of the dissertation (arabic, starting at 1).
+% the remainder of the thesis (arabic, starting at 1).
 % (WBB) At UCSD: put everything, including \titlepage,\copyrightpage,
 % \approvalpage in frontmatter.
 % Changed def. WBB to go with change in use of frontmatter.
