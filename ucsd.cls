@@ -361,8 +361,8 @@
 \def\partname{Part}
 %             ~~~~
 % abstract environment:
-\def\abstractshortname{Abstract of the Dissertation} % Used for TOC
-\def\abstractlongname{Abstract of the Dissertation} % Used for Header
+\def\abstractshortname{Abstract of the Thesis} % Used for TOC
+\def\abstractlongname{Abstract of the Thesis} % Used for Header
 %                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 % dedication:
 \def\dedicationname{Dedication}
