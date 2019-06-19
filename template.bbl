@@ -1,14 +1,87 @@
-\begin{thebibliography}{Mar83}
+\newcommand{\etalchar}[1]{$^{#1}$}
+\begin{thebibliography}{oWM19b}
 
-\bibitem[Mar83]{Martin_1983}
-Robert~D. Martin.
-\newblock {\em Human Brain Evolution in an Ecological Context}.
-\newblock American Museum of Natural History, 1983.
+\bibitem[BBLS19]{bhaskar2019pay}
+Nishant Bhaskar, Maxwell Bland, Kirill Levchenko, and Aaron Schulman.
+\newblock Please pay inside: Evaluating bluetooth-based detection of gas pump
+  skimmers.
+\newblock In {\em 28th $\{$USENIX$\}$ Security Symposium ($\{$USENIX$\}$
+  Security 19)}, 2019.
 
-\bibitem[RI99]{Rilling_Insel_1999}
-James~K. Rilling and Thomas~R. Insel.
-\newblock The primate neocortex in comparative perspective using magnetic
-  resonance imaging.
-\newblock {\em Journal of Human Evolution}, 37(2):191--223, 1999.
+\bibitem[Bla19]{dataExtractPdf}
+Maxwell Bland.
+\newblock Data extract pdf, 2019.
+
+\bibitem[GZDP03]{guerra2003economics}
+Gerardo~A Guerra, Daniel~John Zizzo, William~H Dutton, and Malcolm Peltu.
+\newblock Economics of trust in the information economy: Issues of identity,
+  privacy and security.
+\newblock 2003.
+
+\bibitem[Kre14]{gang_rigged_pumps_bluetooth}
+Brian Krebs.
+\newblock Gang rigged pumps with bluetooth skimmers, January 2014.
+
+\bibitem[Kre16]{all_about_skimmers}
+Brian Krebs.
+\newblock All about skimmers, 2016.
+
+\bibitem[Kre17]{skimmer_GSM_enabled}
+Brian Krebs.
+\newblock Gas pump skimmer sends card data via text, July 2017.
+
+\bibitem[LDGS11]{lops2011content}
+Pasquale Lops, Marco De~Gemmis, and Giovanni Semeraro.
+\newblock Content-based recommender systems: State of the art and trends.
+\newblock In {\em Recommender systems handbook}, pages 73--105. Springer, 2011.
+
+\bibitem[Nor12]{norvig2012artificial}
+Peter Norvig.
+\newblock Artificial intelligence: Early ambitions.
+\newblock {\em New Scientist}, 216(2889):ii--iii, 2012.
+
+\bibitem[oWM19a]{azdwmSkimmers}
+Arizona~Department of~Weights and Measures.
+\newblock Credit card skimmers, 2019.
+
+\bibitem[oWM19b]{azdwmLicensing}
+Arizona~Department of~Weights and Measures.
+\newblock Licensing, 2019.
+
+\bibitem[Paz99]{pazzani1999framework}
+Michael~J Pazzani.
+\newblock A framework for collaborative, content-based and demographic
+  filtering.
+\newblock {\em Artificial intelligence review}, 13(5-6):393--408, 1999.
+
+\bibitem[Rip18]{rippleshot2018fraud}
+Rippleshot.
+\newblock State of card fraud: 2018, 2018.
+
+\bibitem[SBP{\etalchar{+}}19]{scaife2019rogue}
+N.~Scaife, J.~Bowers, C.~Peeters, G.~Hernandez, I.~N. Sherman, P.~Traynor, and
+  L.~Anthony.
+\newblock Kiss from a rogue: Evaluating detectability of pay-at-the-pump card
+  skimmers.
+\newblock In {\em 2019 2019 IEEE Symposium on Security and Privacy (SP)}, pages
+  1208--1222, Los Alamitos, CA, USA, may 2019. IEEE Computer Society.
+
+\bibitem[SPT18]{scaife2018fear}
+Nolen Scaife, Christian Peeters, and Patrick Traynor.
+\newblock Fear the reaper: characterization and fast detection of card
+  skimmers.
+\newblock In {\em 27th $\{$USENIX$\}$ Security Symposium ($\{$USENIX$\}$
+  Security 18)}, pages 1--14, 2018.
+
+\bibitem[Tec19]{flintloc}
+FlintLoc Technologies.
+\newblock Flintloc technologies: Foolproof skimming protection that pays for
+  itself in months., 2019.
+
+\bibitem[Tuk77]{tukey1977exploratory}
+J.W. Tukey.
+\newblock {\em Exploratory Data Analysis}.
+\newblock Addison-Wesley series in behavioral science. Addison-Wesley
+  Publishing Company, 1977.
 
 \end{thebibliography}
