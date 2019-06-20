@@ -11,7 +11,7 @@
 
 % No symbols, formulas, superscripts, or Greek letters are allowed
 % in your title.
-\title{On Gas Station Skimmer Detection}
+\title{Understanding Inspection Methodologies and Using Off-the-Shelf Mobile Devices to Detect Bluetooth-based Credit Card Skimmers}
 
 \author{Maxwell Troy Bland}
 \degreeyear{2019}
@@ -62,7 +62,7 @@ Professor Deian Stefan\\
 %
 %
 \begin{dedication}
-    To criminals.
+    To the end of the line.
 \end{dedication}
 
 
@@ -82,8 +82,6 @@ Professor Deian Stefan\\
 % 	Which equals us.
 %   \end{flushright}
 % \end{mydedication}
-
-
 
 %% EPIGRAPH
 %
@@ -143,7 +141,7 @@ Professor Deian Stefan\\
 \begin{publications}
 \item Nishant Bhaskar, Maxwell Bland, Kirill Levchenko, and Aaron Schulman. "Please Pay Inside: Evaluating Bluetooth-based Detection of Gas Pump Skimmers." In Proceedings of the 28th USENIX Security Symposium, https://www.usenix.org/conference/usenixsecurity19/presentation/bhaskar. USENIX, 2019. 
 \item Hallahan, William T., Anton Xue, Maxwell Troy Bland, Ranjit Jhala, and Ruzica Piskac. "Lazy counterfactual symbolic execution." In Proceedings of the 40th ACM SIGPLAN Conference on Programming Language Design and Implementation, pp. 411-424. ACM, 2019.
-\item Christian Dameff, M. D., Maxwell Bland, and Jeff Tully. "Pestilential Protocol: How Unsecure HL7 Messages Threaten Patient Lives."
+\item Christian Dameff, M. D., Maxwell Bland, and Jeff Tully. "Pestilential Protocol: How Unsecure HL7 Messages Threaten Patient Lives." Blackhat 2018.
 \end{publications}
 \end{vitapage}
 
@@ -154,14 +152,7 @@ Professor Deian Stefan\\
 %   The abstract may continue to a second page if necessary.
 %
 \begin{abstract}
-  This thesis explores the detection of skimming devices installed in fuel station gas pumps. It begins
-    with a survey of current techniques for skimmer detection as practiced by investigators in the 
-    Arizona Weights and Measures Department. Following this, it describes the common features of
-    internal fuel pump skimmers and the design of a mechanism for detection. This thesis concludes with
-    the description of the implementation of such a mechanism, codenamed Bluetana, which was used
-    to recover more than fifty skimmers in the 2018 and 2019 calendar years.  This thesis also includes 
-    remarks on the design of crowdsourced applications and an analysis of the development pipeline 
-    for a pseudo-sensor network of android cellphones. 
+Embedded devices installed inside gas pumps allow criminals to steal millions each year. These devices, known as skimmers, record unencrypted information transmitted by payment circuitry. Despite skimmers' impact, no study of law enforcement skimmer recovery methodologies exists. This thesis presents the first such study. We discover that criminals often use Bluetooth to retrieve stolen card information. We also find that current investigative mechanisms are ineffective. These findings motivated the development of an Android application, Bluetana, for skimmer detection. The core of Bluetana is a Bluetooth scanner that any commodity smartphone can run. Each Bluetana instance provides data to a back-end database for aggregation and analysis. This crowd-sourced approach is effective: detecting 64 skimmers over two years. 
 \end{abstract}
 
 

@@ -1,5 +1,17 @@
 \newcommand{\etalchar}[1]{$^{#1}$}
-\begin{thebibliography}{oWM19b}
+\begin{thebibliography}{{Mem}11}
+
+\bibitem[817]{quickInstall}
+WFLA News~Channel 8.
+\newblock Crooks caught on camera installing credit card skimmer in longboat
+  key, December 2017.
+
+\bibitem[{App}15]{alisuretove}
+{Appeal from the US District Court for the Eastern District of Oklahoma, USA v.
+  Konstantinov et al, 6:13cr62}.
+\newblock {United States Court of Appeals for the Tenth Circuit}.
+\newblock \url{https://www.ca10.uscourts.gov/opinions/14/14-7050.pdf}, June
+  2015.
 
 \bibitem[BBLS19]{bhaskar2019pay}
 Nishant Bhaskar, Maxwell Bland, Kirill Levchenko, and Aaron Schulman.
@@ -12,11 +24,12 @@ Nishant Bhaskar, Maxwell Bland, Kirill Levchenko, and Aaron Schulman.
 Maxwell Bland.
 \newblock Data extract pdf, 2019.
 
-\bibitem[GZDP03]{guerra2003economics}
-Gerardo~A Guerra, Daniel~John Zizzo, William~H Dutton, and Malcolm Peltu.
-\newblock Economics of trust in the information economy: Issues of identity,
-  privacy and security.
-\newblock 2003.
+\bibitem[{Cri}16]{cristea}
+{Criminal Complaint, USA v Cristea et al, 4:16cr182}.
+\newblock {US District Court for the Southern District of Texas}.
+\newblock
+  \url{https://www.courtlistener.com/recap/gov.uscourts.txsd.1357299.1.0.pdf},
+  April 2016.
 
 \bibitem[Kre14]{gang_rigged_pumps_bluetooth}
 Brian Krebs.
@@ -30,10 +43,21 @@ Brian Krebs.
 Brian Krebs.
 \newblock Gas pump skimmer sends card data via text, July 2017.
 
+\bibitem[Kre18]{avoid_card_skimmers_pump}
+Brian Krebs.
+\newblock How to avoid card skimmers at the pump, June 2018.
+
 \bibitem[LDGS11]{lops2011content}
 Pasquale Lops, Marco De~Gemmis, and Giovanni Semeraro.
 \newblock Content-based recommender systems: State of the art and trends.
 \newblock In {\em Recommender systems handbook}, pages 73--105. Springer, 2011.
+
+\bibitem[{Mem}11]{hristov}
+{Memorandum and Order, USA v. Hristov et al, 1:10cr10056}.
+\newblock {US District Court for the District of Massachussetts}.
+\newblock
+  \url{https://www.courtlistener.com/recap/gov.uscourts.mad.127405/gov.uscourts.mad.127405.62.0.pdf},
+  April 2011.
 
 \bibitem[Nor12]{norvig2012artificial}
 Peter Norvig.
@@ -58,6 +82,10 @@ Michael~J Pazzani.
 Rippleshot.
 \newblock State of card fraud: 2018, 2018.
 
+\bibitem[S.18]{skimPlus}
+Ronnie S.
+\newblock Skim plus (bluetooth skimmer detection), December 2018.
+
 \bibitem[SBP{\etalchar{+}}19]{scaife2019rogue}
 N.~Scaife, J.~Bowers, C.~Peeters, G.~Hernandez, I.~N. Sherman, P.~Traynor, and
   L.~Anthony.
@@ -65,6 +93,13 @@ N.~Scaife, J.~Bowers, C.~Peeters, G.~Hernandez, I.~N. Sherman, P.~Traynor, and
   skimmers.
 \newblock In {\em 2019 2019 IEEE Symposium on Security and Privacy (SP)}, pages
   1208--1222, Los Alamitos, CA, USA, may 2019. IEEE Computer Society.
+
+\bibitem[{Sen}15]{aqel}
+{Sentencing Memorandum of the United States, USA v. Aqel, 2:14cr270}.
+\newblock {US District Court for the Southern District of Ohio}.
+\newblock
+  \url{https://www.courtlistener.com/recap/gov.uscourts.ohsd.178108/gov.uscourts.ohsd.178108.47.0.pdf},
+  November 2015.
 
 \bibitem[SPT18]{scaife2018fear}
 Nolen Scaife, Christian Peeters, and Patrick Traynor.
@@ -77,6 +112,13 @@ Nolen Scaife, Christian Peeters, and Patrick Traynor.
 FlintLoc Technologies.
 \newblock Flintloc technologies: Foolproof skimming protection that pays for
   itself in months., 2019.
+
+\bibitem[{The}17]{armenian}
+{The Newnan Times-Herald}.
+\newblock Armenian skimmer leader pleads guilty.
+\newblock \url {
+  http://times-herald.com/news/2015/06/armenian-skimmer-leader-pleads-guilty},
+  July 2017.
 
 \bibitem[Tuk77]{tukey1977exploratory}
 J.W. Tukey.

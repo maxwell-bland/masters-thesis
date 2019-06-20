@@ -83,6 +83,10 @@ Once the data was collected by Bluetana, it was stored in a PSQL database, and \
 
 The data was stored in a PSQL database, and important lesson were learned about reducing thec complexity of joins, removing null records, and creating indices early on throughout the entire process. Ultimately, the scripts used to generate the plots in the paper became one, rather complicated connection of several interelated components casting the data through different filters. Reflecting on this process, research often results in messy, improvisational-jazz style code. The entropy required by exploration and not neccessarily perfection should be embraced, but if one can document their thoughts along the way, these scripts can be studied, corrected, and modified more easily. A sample of some of the code is provided in Figure~\ref{fig:messy-improv-code}.
 
+\section{Skimmer Flagging Workflow}\label{sec:skimmer-flagging-workflow}
+
+Detail the flow chart, maybe use the section of the paper that goes over this?
+
     \section{Potential Drawbacks and Difficulties with Future Skimmer Detection}
 
 There are a few potential drawbacks to the approach of using Android to develop a skimmer detection application. The first is the inability to expand detection to wireless mechanisms beyond Bluetooth and Wifi without rooting the phone, as the API provides no direct control of the phone's antennaes. Another drawback is the restrictions and ambiguities introduced by the Android API, such as the paging and name request portions of the bluetooth protocol, as outlined in Section~\ref{sec:name-request-sect}, though this may be circumventable via native code modules. 
