@@ -1,2 +1,3 @@
-grep -l "[Oo]rigin[ :] *[(SCH)(REI)(COM)(VDA)(SKI)(SPC)(COL)(VAN)]" ../**/*.txt | wc -l
-grep -l "[Ss]kimm" *.txt | wc -l
+grep -i "origin[ :]\s*\(sch\|rei\|com\|vda\|ski\|spc\|col\|van\)" ./**/*.txt
+grep -i "skimm" $(grep -i "origin[ :]\s*com" *.txt)
+

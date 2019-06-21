@@ -21,13 +21,13 @@ Inspection report PDFs from the AZDWM are accessible through a queriable web int
     \noindent
     \begin{tabular}{l|c}
     \toprule
-    Total Number of Documents                                         & \upperAZDWMpdfs  \\
+    Total Number of PDFs                                         & \upperAZDWMpdfs  \\
     \midrule
-    Number of Documents with Parsable Origin                          & \numParsableAZDWMpdfs   \\
+    Number of PDFs with Parsable Origin                          & \numParsableAZDWMpdfs   \\
     \midrule
-    Number of Documents Originating from a Skimmer Inspection         & \numSKIorigin  \\
+    Number of PDFs Originating from a Skimmer Inspection         & \numSKIOrig  \\
     \midrule
-    Number of Documents Matching the Regular Expression ``[Ss]kimm''  & \numSkimWord  \\
+    Number of PDFs with the word ``skimm''                       & \numSkimWord  \\
     \midrule
     Success Rate Reported by the AZDWM (Unhinted)                     & 1.5\%  \\
     \bottomrule
@@ -71,7 +71,7 @@ This is done to preserve fingerprints
 \cite{20340-269297}.
 Some documents do attempt to correlate Bluetooth features to discovered skimmers. 
 For example, MAC addresses and skimmer names
-(Figures~\ref{fig:mac-address-report}).
+(Figure~\ref{fig:mac-address-report}).
 During the Bluetana study, these hints were found to be inaccurate.
 However, they do illustrate some investigator awareness of Skimmers' Bluetooth capabilities.
 
@@ -100,27 +100,27 @@ However, they do illustrate some investigator awareness of Skimmers' Bluetooth c
 Inspection reports have~\numorigins~different origin headers.
 Table \ref{tab:explanations-of-origins}
 contains statistics and descriptions of the different report types.
-No online resource explains what these headers mean.
-Thus, the explanations included are from manual analysis. 
 Regular, scheduled inspections are the most common, followed by skimmer inspections. 
 Complaint-triggered inspections are also common. 
 Unfortunately, determining whether a complaint was about a skimmer installation is difficult.
-Complaints unrelated to skimmers can include skimmer checks and a regular expression match for 
-\texttt{[Ss]kimm} \cite{7690-290206}.
+Complaints unrelated to skimmers can include skimmer checks and the word 
+\texttt{skimm} \cite{7690-290206}.
+Addtionally, note that the total number of documents is greater than number of parsable PDFs.
+This is because some documents contained multiple inspection reports concatinated.
 
 \begin{table}
     \centering
     \begin{tabular}{@{}lcr@{}}
     \toprule
     Origin Header & Meaning                        & Number of Documents \\ \midrule
-    SCH           & Regular Scheduled Inspection   & 10,670              \\
-    COM           & Complaint Triggered Inspection & 1,692               \\
-    VDA           & Meter Licensing Inspection     & 377                 \\
-    SKI           & Skimmer Inspection Report      & 2288                \\
-    SPC           & Fuel Quality Inspection        & 43                  \\
-    COL           & Licensing Fee Collection       & 168                 \\
-    VAN           & Vapor Recovery Inspection      & 352                 \\
-    REI           & Price Posting Inspection       & 768                 \\ \bottomrule
+    SCH           & Regular Scheduled Inspection   & \numSCHOrig \\
+    SKI           & Skimmer Inspection Report      & \numSKIOrig \\
+    COM           & Complaint Triggered Inspection & \numCOMOrig \\
+    REI           & Price Posting Inspection       & \numREIOrig \\ 
+    VDA           & Meter Licensing Inspection     & \numVDAOrig \\
+    VAN           & Vapor Recovery Inspection      & \numVANOrig \\
+    COL           & Licensing Fee Collection       & \numCOLOrig \\
+    SPC           & Fuel Quality Inspection        & \numSPCOrig \\ \bottomrule
     \end{tabular}
     \caption{
       Summary of skimmer inspection form data origins and their occurrence rate.
@@ -133,12 +133,12 @@ Complaints unrelated to skimmers can include skimmer checks and a regular expres
 \begin{figure}
     \lstset{language=bash}
     \begin{lstlisting}
-      grep "[Ss]kimm" $(grep -l "[Oo]rigin[ :] *COM" *.txt)
+      grep -li "skimm" $(grep -li "origin[ :]*\s*com" *.txt)
     \end{lstlisting}
     \caption{
       Example regular expression used to match document types.
       In this case, the script finds complaint triggered reports that mention skimmers.
-      }
+    }
     \label{fig:grep-code}
 \end{figure}
 
@@ -146,45 +146,28 @@ A regular expression was built to extract the origin header the documents
 (Figure~\ref{fig:grep-code}).
 This excluded~\numNonParsableAZDWMpdfs~from Table
 \ref{tab:explanations-of-origins}. 
-\texttt{pdftotext}, used for the generation of parsable text, had failed on these documents. 
-Many of these documents were ``pressure decay test" forms, that do not include a skimmer check.
-Others did not contain the first, primary report page. 
-This makes regular expression based origin determination difficult or, in some cases, impossible. 
-Others were of poor PDF quality, hand written, or photos of the report form, such as in Figure
-\ref{fig:photo-of-report-form}.
-This presented three further options for analysis. 
+Most of these documents have missing or incorrect ToUnicode CMaps.
+Documents with embedded fonts include this mapping for the extraction of Unicode content
+\cite{toUnicode-mapping-tutorial}.
+High-quality optical character recognition (OCR) has potential to correct these documents. 
+This analysis was attempted and is detailed in Section~\ref{sec:complications-of-ocr}.
+\numPressureDecayTest~of the documents did not contain the first, primary report page.
+These correspond to Pressure Decay Test forms, used when testing the pumps for leaks.
 
-\begin{itemize}
-\item 
-A more sophisticated regular expression could capture a greater proportion of the documents.
-This was attempted and found to be difficult and inadequate in characterization
-\item
-These non-parsable documents could be discarded.
-However, these PDFs accounted for~\percentNonParsableAZDWMpdfs~and presented potential for a biased analysis. 
-\item
-The performance of high-quality optical character recognition could correct the PDF text inference. 
-Since there was no downside to this approach, it was attempted. The next section details the efficacy of this computationally-heavy analysis.
-\end{itemize} 
+% The ``pre-inspection checklist", indicating the discovery of a skimmer is usually hand written
+% (Figure~\ref{fig:handwritten-checklist}).
+% 
+% \begin{figure}
+%     \centering
+%     \includegraphics[width=\linewidth]{pics/handwritten-checklist.png}
+%     \caption{
+% 	    Example of an inspection report which is not parsable via \texttt{pdftotext}.
+%       In this case, even OCR is unable to infer the handwritten text.
+%     }
+%     \label{fig:handwritten-checklist}
+% \end{figure}
 
-\begin{figure}
-    \centering
-    \includegraphics[width=\linewidth]{pics/photo-of-report-form}
-    \caption{
-	    Example of a report which would not be parsable directly via \texttt{pdftotext}.
-    }
-    \label{fig:photo-of-report-form}
-\end{figure}
-
-    A case analysis of the initial set of PDFs led to the characterization presented in Table~\ref{tab:num-failed-regex-ocr} when examining the origin header.  The table is broken down by year for sake of characterizing AZDWM behavior over time.  We can see that there was a clear transition around \yearofhandwrittentotyped of handwritten to typed reports.  At this point, a judgment must be made as to whether additional effort should be spent to analyze these additional documents.
-
-\begin{table}
-    \centering
-    \input{tabs/num-failed-regex-ocr}
-    \caption{Summary counts for the origin headers parsable without OCR and with OCR. \todo{details}} 
-    \label{tab:num-failed-regex-ocr}
-\end{table}
-
-    \subsection{Complications of OCR}
+    \subsection{Complications of OCR}\label{sec:complications-of-ocr}
 
     If the purpose is complete understanding of the exact statistics of the data set, a mixture of FSMA will be needed to complete the analysis.  One mistake of this study was to not properly understand and segment the data which needed additional time to process: the choice was blindly made to perform OCR on all the documents, leading to \ectwohoursspent hours of Amazon EC2 time spent on a 72 core machine, a monetary cost of \ectwodollarsspent.
 
@@ -221,23 +204,28 @@ Since there was no downside to this approach, it was attempted. The next section
 
     \section{Document Data Extraction}\label{sec:document-data-extraction}
 
-    With the data extracted from the documents, one can learn several interesting and useful facts about the behavior of inspectors and the nature of skimmers.  Primary among these facts is the number of successful inspections for skimmers of different origin types.  Figuring out just one piece of evidence from these documents proves to be difficult, and thus I dedicate the next few sections to the nature of the analysis, in hopes that it will be instructive for future work.  For the final work \cite{bhaskar2019pay}, we ended up getting ground truth data of skimmer detection accuracy from Arizona.  This provides an opportunity for a comparison of the attempted data analysis techniques.
-
-    Before it is possible to analyze success rate, we must figure out whether or not an inspection occurred for a skimmer.  In order to do so, we explore several different techniques:
-
-    \begin{itemize}
-    \item Reports with the word skimmer in them.
-    \item Reports with a combination of phrases in them constructed from a sampling of reports.
-    \item Random sampling by hand.
-    \item Manual inspection of reports by hand.
-    \end{itemize}
-
-    These techniques were usable after the unclean documents had OCR performed upon them.  However, they had differing levels of success.  We contacted AZDWM directly in order to get accurate statistics for the number of skimmers found during routine investigations and found that the success rate for these investigators was~\azgivenskimsuccessrate.  The comparable statistics recovered from each of these methodologies are detailed in Table \ref{tab:success-rates}.
+Despite parsing difficulties, the documents contain useful information about skimmer investigations.
+Of particular interest is the number of skimmer inspections which discover skimmers.
+A manual analysis of all the documents would be required to answer this question with perfect precision.
+Thus, several alternative approximations were attempted.
+Each alternative method and the resulting approximation are detailed in Table
+\ref{tab:success-rates}.
+Details about these methods are included in the next four sections.
+The AZDWM was also contacted directly for the ground truth data. 
+Their reported ``hit" rate for unhinted inspections was 
+\percentSkimmersToStations.
 
 \begin{table}
     \centering
-    \input{tabs/success-rates}
-    \caption{The various skimmer detection success rates as reported by different methods for document analysis. \todo{details}} 
+    \begin{tabular}{lcr}
+    \hline
+    Approximation Method  & Number of Documents Reported & Approximated Unhinted Success Rate \\ \hline
+    Keyword Analysis      &                              &                                    \\
+    Phrase-based Analysis &                              &                                    \\
+    Random Sampling       &                              &                                    \\
+    Manual Inspection     &                              &                                    \\ \hline
+    \end{tabular}
+    \caption{The various skimmer detection success rates as reported by different methods for document analysis. \todo{details}}
     \label{tab:success-rates}
 \end{table}
 

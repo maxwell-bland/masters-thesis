@@ -13,16 +13,13 @@ WFLA News~Channel 8.
 \newblock \url{https://www.ca10.uscourts.gov/opinions/14/14-7050.pdf}, June
   2015.
 
-\bibitem[BBLS19]{bhaskar2019pay}
-Nishant Bhaskar, Maxwell Bland, Kirill Levchenko, and Aaron Schulman.
-\newblock Please pay inside: Evaluating bluetooth-based detection of gas pump
-  skimmers.
-\newblock In {\em 28th $\{$USENIX$\}$ Security Symposium ($\{$USENIX$\}$
-  Security 19)}, 2019.
-
 \bibitem[Bla19]{dataExtractPdf}
 Maxwell Bland.
 \newblock Data extract pdf, 2019.
+
+\bibitem[Bro18]{7690-290206}
+Michael Brooks.
+\newblock Inspection #290206, March 2018.
 
 \bibitem[{Cri}16]{cristea}
 {Criminal Complaint, USA v Cristea et al, 4:16cr182}.
@@ -30,6 +27,10 @@ Maxwell Bland.
 \newblock
   \url{https://www.courtlistener.com/recap/gov.uscourts.txsd.1357299.1.0.pdf},
   April 2016.
+
+\bibitem[Inc03]{toUnicode-mapping-tutorial}
+Adobe~Systems Incorporated.
+\newblock Tounicode mapping file tutorial, May 2003.
 
 \bibitem[Kre14]{gang_rigged_pumps_bluetooth}
 Brian Krebs.
