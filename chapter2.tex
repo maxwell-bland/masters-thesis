@@ -36,11 +36,11 @@ Inspection report PDFs from the AZDWM are accessible through a queriable web int
     \label{tab:overview-azdwm-stats}
 \end{table}
 
-A primary goal of this survey is to understand how investigators perform skimmer inspections. For instance, how rigorously inspectors investigate pumps (Section~\ref{sec:inspector-behavior}). It is also useful to quantify the hit rate of skimmer inspections (Section~\ref{sec:document-data-extraction}); this provides a measure of how common skimming is. Additionally, we may quantify how much room for improvement there is in detection methods by measuring how long inspections take to complete (Section~\ref{sec:insp-time-ana}). 
+A primary goal of this survey is to understand how investigators perform skimmer inspections. For instance, how rigorously inspectors investigate pumps (Section~\ref{sec:inspector-behavior}). Another goal was to quantify the hit rate of skimmer inspections (Section~\ref{sec:document-data-extraction}); this provides a measure of how common skimming is. Additionally, it was important to determine how much room for improvement there is in detection methods. This was done by measuring how long inspections take to complete (Section~\ref{sec:insp-time-ana}). 
 
 \section{Understanding the Documents}\label{sec:understanding-the-documents}
 
-      Upon examining the PDFs, we find the information is highly unstructured. For example, documents have an inconsistent use of the 198 failure code. This code indicates a skimmer was found. Figure~\ref{fig:198-usages} depicts two different uses of this code. There also exist successful skimmer inspections with no 198 code in the document at all \cite{13529-268466}. Unfortunately, this indicates a single regular expression search for successful investigations is nontrivial. Additionally, there are latent ambiguities in the data collected. Many documents do not state whether a found skimmer was internal or external. They also do not indicate whether a given inspection called in by a gas station owner or other party.
+      Upon examining the PDFs, we find the information contained within is highly unstructured. For example, the documents have an inconsistent use of the 198 failure code. This code indicates a skimmer was found. Figure~\ref{fig:198-usages} depicts two different uses of this code. There also exist successful skimmer inspections with no 198 code in the document at all \cite{13529-268466}. Unfortunately, this indicates a single regular expression search for successful investigations is nontrivial. Additionally, there are latent ambiguities in the data collected. Many documents do not state whether a found skimmer was internal or external. They also do not indicate whether a given inspection called in by a gas station owner or other party. This would be the case if the station owner or service tech was responsible for the discovery of the skimmer.
 
 \begin{figure}
     \centering
@@ -62,89 +62,115 @@ The exact skimmer inspection methodology is not noted in any of the reports. The
     \label{fig:check-for-skimmers}
 \end{figure}
 
-    The structure of the report documents also reveals some details about the structure of skimmers.  A checkbox on some skimmer inspection reports has inspectors tag whether a skimmer is GSM or Bluetooth enabled, as seen in Figure~\ref{fig:bluetooth-or-gsm}.  Of course, it is unlikely that the inspectors have a perfect sense of this; reports indicate that they do not unwrap the device from the encasing tape in order to preserve fingerprints (Figure~\ref{fig:device-not-unwrapped}), and instead bag the devices as evidence for local police officers.  The documents also contain hints regarding potential features of Bluetooth-enabled skimming devices, such as MAC addresses and skimmer names (Figures~\ref{fig:mac-address-report} and~\ref{fig:skimmer-name-report}.  Of course, the accuracy of these claims may be taken into question, but they do provide an adequate starting point for the development of a solution to the problem of skimming.
+The inspection reports also contain information on skimmer construction.
+Some report forms have a checkbox for tagging whether a skimmer is SMS or Bluetooth enabled
+(Figure~\ref{fig:bluetooth-or-gsm}).
+However, inspectors may not have a perfect sense of this.
+AZDWM has informed us Investigators do not to remove any tape used to encase or hide the skimmer in the pump.
+This is done to preserve fingerprints 
+\cite{20340-269297}.
+Some documents do attempt to correlate Bluetooth features to discovered skimmers. 
+For example, MAC addresses and skimmer names
+(Figures~\ref{fig:mac-address-report}).
+During the Bluetana study, these hints were found to be inaccurate.
+However, they do illustrate some investigator awareness of Skimmers' Bluetooth capabilities.
 
 \begin{figure}
     \centering
-    \includegraphics[width=\linewidth]{report_pics/bluetooth_or_gsm}
+    \includegraphics[width=\linewidth]{pics/bluetooth-or-gsm.png}
     \caption{
-	    Section of the inspection reports tagging the wireless exfiltration mechanism used by criminals.
-	    \todo{details}
+      Some inspection forms include a checkbox for the exfiltration mechanism of the skimmer.
+      While the selection of SMS may not be accurate, it does indicate not all skimmers use Bluetooth.
     }
     \label{fig:bluetooth-or-gsm}
 \end{figure}
 
 \begin{figure}
     \centering
-    \includegraphics[width=\linewidth]{report_pics/device_not_unwrapped}
+    \includegraphics[width=\linewidth]{pics/mac-address-report.png}
     \caption{
-	    Section of the inspection reports noting that the skimmer was not closely examined.
-	    \todo{details}
-    }
-    \label{fig:device-not-unwrapped}
-\end{figure}
-
-\begin{figure}
-    \centering
-    \includegraphics[width=\linewidth]{report_pics/mac_address_report}
-    \caption{
-	    Section of the inspection reports noting a false potential MAC address for a skimmer.
-	    \todo{details}
+	    Section of the inspection reports noting a potential MAC address for a skimmer.
+      Follow up investigation found this MAC address to be uncorrelated with skimmer discovery.
     }
     \label{fig:mac-address-report}
 \end{figure}
 
-\begin{figure}
-    \centering
-    \includegraphics[width=\linewidth]{report_pics/skimmer_name_report}
-    \caption{
-	    Section of the inspection reports noting an odd skimmer device name.
-	    \todo{details}
-    }
-    \label{fig:skimmer-name-report}
-\end{figure}
-
     \subsection{Understanding Document Origins}
 
-    Inspection reports have \numorigins different origin headers; statistics and descriptions of the different report types are provided in Table~\ref{tab:explanations-of-origins}.  The details of which origin corresponded to which type of inspection where accumulated via a sampling of the various document types.  Since the different inspection origin types have different attached forms, it is possible to differentiate the meaning of the different origins from the primary data source itself.  Had this information been difficult to attain (meaning a thirty minutes to an hour spent searching to no avail), it would have been suggested to attain it from a secondary source.  Of course, performing this analysis required exploration to determine the different document origins, contained in the following code:
-
-    \lstset{language=Python}
-    \begin{lstlisting}
-    def origin(text_data):
-      orig_str = re.findall(
-          "(origin|ongin|Onegin)(:?\s*_?)(\S+)", text_data, re.IGNORECASE
-      )
-      if orig_str:
-          for match in orig_str:
-              try:
-                  match = match[2][:3]
-              except Exception:
-                  continue
-              if match in ORIGIN_TYPES:
-                  return match
-      return None
-    \end{lstlisting}
+Inspection reports have~\numorigins~different origin headers.
+Table \ref{tab:explanations-of-origins}
+contains statistics and descriptions of the different report types.
+No online resource explains what these headers mean.
+Thus, the explanations included are from manual analysis. 
+Regular, scheduled inspections are the most common, followed by skimmer inspections. 
+Complaint-triggered inspections are also common. 
+Unfortunately, determining whether a complaint was about a skimmer installation is difficult.
+Complaints unrelated to skimmers can include skimmer checks and a regular expression match for 
+\texttt{[Ss]kimm} \cite{7690-290206}.
 
 \begin{table}
     \centering
-    \input{tabs/explanations-of-origins}
-    \caption{Summary of skimmer inspection form data origins and their occurence rate.}
+    \begin{tabular}{@{}lcr@{}}
+    \toprule
+    Origin Header & Meaning                        & Number of Documents \\ \midrule
+    SCH           & Regular Scheduled Inspection   & 10,670              \\
+    COM           & Complaint Triggered Inspection & 1,692               \\
+    VDA           & Meter Licensing Inspection     & 377                 \\
+    SKI           & Skimmer Inspection Report      & 2288                \\
+    SPC           & Fuel Quality Inspection        & 43                  \\
+    COL           & Licensing Fee Collection       & 168                 \\
+    VAN           & Vapor Recovery Inspection      & 352                 \\
+    REI           & Price Posting Inspection       & 768                 \\ \bottomrule
+    \end{tabular}
+    \caption{
+      Summary of skimmer inspection form data origins and their occurrence rate.
+      Reports are submitted most often for scheduled and skimmer-specific inspections.
+    }
     \label{tab:explanations-of-origins}
 \end{table}
 
 
-    By first building a regular expression to extract the origin header from the document, it became possible to ``handle'' the documents.  The steps included figuring out which report types existed, were prevalent, and a sampling of the documents from each origin for further analysis.  Of course, the implicit first step was to randomly sample a few of the documents without knowing that the origin header even existed, and perform the analysis to realize the header's importance.
+\begin{figure}
+    \lstset{language=bash}
+    \begin{lstlisting}
+      grep "[Ss]kimm" $(grep -l "[Oo]rigin[ :] *COM" *.txt)
+    \end{lstlisting}
+    \caption{
+      Example regular expression used to match document types.
+      In this case, the script finds complaint triggered reports that mention skimmers.
+      }
+    \label{fig:grep-code}
+\end{figure}
 
-    From this analysis, it is clear that some inspections are explicitly for skimmers, others are not.  It is also possible to extract some descriptive statistics, such as the fact that the first explicit skimmer investigation was in the year \firstskimmerinspectionyear.  Additionally, the data that \emph{can} be extracted from the documents also becomes clear.
+A regular expression was built to extract the origin header the documents
+(Figure~\ref{fig:grep-code}).
+This excluded~\numNonParsableAZDWMpdfs~from Table
+\ref{tab:explanations-of-origins}. 
+\texttt{pdftotext}, used for the generation of parsable text, had failed on these documents. 
+Many of these documents were ``pressure decay test" forms, that do not include a skimmer check.
+Others did not contain the first, primary report page. 
+This makes regular expression based origin determination difficult or, in some cases, impossible. 
+Others were of poor PDF quality, hand written, or photos of the report form, such as in Figure
+\ref{fig:photo-of-report-form}.
+This presented three further options for analysis. 
 
-    There were also a number of ``unparsable'' documents, noted in Table~\ref{tab:explanations-of-origins}.  The reason is that some reports are either hand written, or just photos of the report form, such as in Figure~\ref{fig:photo-of-report-form}.  This makes a simple \texttt{pdftotext} analysis of the AZDWM inspection reports impossible.  Once this unique feature of the data is discovered, the characterization of it becomes tantamount.  Documents with handwritten sections or poor optical character recognition (OCR) may be identified by the presence of difficulty in using regular expressions to parse the data or by the presence of unprintable characters.  In the former case, it is important to ensure that the difficulty does not occur as a result of an unknown data type; this may be handled by sampling from the error cases.  In the latter case, the data must be cleaned in a fully automated, semi automated, or manual fashion\footnote{Hereafter abbreviated FSMA (fully, semi, manual analysis)}.
+\begin{itemize}
+\item 
+A more sophisticated regular expression could capture a greater proportion of the documents.
+This was attempted and found to be difficult and inadequate in characterization
+\item
+These non-parsable documents could be discarded.
+However, these PDFs accounted for~\percentNonParsableAZDWMpdfs~and presented potential for a biased analysis. 
+\item
+The performance of high-quality optical character recognition could correct the PDF text inference. 
+Since there was no downside to this approach, it was attempted. The next section details the efficacy of this computationally-heavy analysis.
+\end{itemize} 
 
 \begin{figure}
     \centering
-    \includegraphics[width=\linewidth]{report_pics/photo-of-report-form}
+    \includegraphics[width=\linewidth]{pics/photo-of-report-form}
     \caption{
 	    Example of a report which would not be parsable directly via \texttt{pdftotext}.
-	    \todo{details}
     }
     \label{fig:photo-of-report-form}
 \end{figure}
