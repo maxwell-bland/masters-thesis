@@ -1,0 +1,2 @@
+grep -l "[Oo]rigin[ :] *(SCH|REI|COM|VDA|SKI|ADM|SPC|COL|VAN)" *.txt | wc -l
+grep -l "[Ss]kimm" *.txt | wc -l

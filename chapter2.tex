@@ -4,59 +4,60 @@
     --- Sir Arthur Conan Doyle, \emph{Sherlock Holmes}
   \end{quote}
 
-This section surveys the current skimming investigative techniques performed of the Arizona Department of Weights and Measures (AZDWM).  It begins with descriptive statistics on routine gas pump inspections. These statistics lend some insight on skimmer frequency. Challenges in attaining these statistics lead into a discussion on data acquisition methodology. This chapter then highlights discoveries about inspections and skimmers attained from the documents. It concludes with the motivation for Bluetana's development, future work, and lessons learned. Particularly, techniques from recommender systems may have been useful during document data analysis.
+This chapter surveys gas pump inspection reports from the Arizona Department of Weights and Measures (AZDWM). It begins by attempting to attain descriptive statistics related to skimming from these documents. Challenges in attaining these statistics lead into discussion of data acquisition methodologies. This chapter then highlights discoveries about inspections and skimmers contained within the documents. It concludes with a summary of the motivation for Bluetana's development provided by the documents and future work. 
 
-This chapter functions as a \emph{case study} from which more general methods may be inferred.  It stands in contrast to the work of John Tukey's EDA \cite{tukey1977exploratory}.  This work does not provide universal techniques. Instead, it compares multiple approaches to the analysis of skimmer inspection documents. This demonstrates the ways \emph{not} to do data analysis on similar data sets. It does so by comparing tempting, flawed data analysis techniques to ground-truth data. The true power of random sampling is also revealed. Every research project is different. However, multifactor analysis of human-generated data is common in many sociological domains. 
+Analysis of the data provided by AZDWM proved to be difficult, but had two primary benefits. The first was a categorical understanding of current investigative techniques: notes provided by investigators offer insight into how they perform inspections. The second was an understanding of the potential avenues of skimmer detection. Photos and forms included in the reports reveal details of skimmer construction. These details suggest Bluetooth modules are commonly used and that Bluetooth is a potentially effective route for detection. 
 
-Analysis of the data provided by AZDWM proved to be difficult, but had two primary benefits. The first was a categorical understanding of current investigative techniques. Notes provided by investigators also offer (sometimes incorrect) guidance on skimmer detection. The second was an understanding of the potential avenues of skimmer detection. Photos and forms included in the reports provided insight into skimmer construction. These features suggested Bluetooth was common, and  potentially an effective route for detection. 
+Finally, This chapter functions as a \emph{case study} of exploratory data analysis. It does not provide universal techniques; instead, it compares multiple approaches to the analysis of gas station inspection documents. This structure allows the chapter to demonstrate some ways \emph{not} to do data analysis on this type of data set. It does so by comparing tempting, flawed data analysis techniques to ground-truth data. 
     
     \section{Survey Background}
 
-    Over the course of the past nine years, the AZDWM has been collecting internal reports and exposing them using an externally queriable web interface.  Table~\ref{tab:descriptive-azdwm-stats} provides descriptive statistics of the entire AZDWM dataset. The oldest report is from July 2010, and there are 51,753 PDFs available in total.
+Inspection report PDFs from the AZDWM are accessible through a queriable web interface (\url{https://ctutools.azda.gov/PdfOriginals/}). Thus, the data set of reports was retrieved via an html parser and batched \texttt{wget} requests. The PDFs downloaded from this source include documents unrelated to inspections. PDFs relating to inspection reports follow a naming scheme of \texttt{\{BMF \#\}-\{Inspection \#\}.(pdf|PDF)}. A BMF, or Business Master File, number is a unique identifier given to each business by the AZDWM \cite{azdwmLicensing}. It is not clear from the filenames which reports pertain to skimming.  Thus, classifying and analyzing these reports requires parsing the PDFs themselves. Luckily, reports contain a header that indicates the origin of the inspection.
+
+    There are~\totalAZDWMpdfs~inspection report PDFs available on the AZDWM website. The oldest report available is from July 2010. This survey will focus on reports filed from the beginning of 2016 to the end of 2018. This amounts to a total of~\upperAZDWMpdfs~reports. By restricting analysis to the past three years of data, we preserve the relevance of the study to the present day. Table~\ref{tab:overview-azdwm-stats} provides overview statistics on the documents. 
 
 \begin{table}
     \centering
-    \input{tabs/descriptive-azdwm-stats}
-	\caption{Descriptive statistics on the documents from AZDWM gas station inspection reports. \todo{Insight numbers.}}
-    \label{tab:descriptive-azdwm-stats}
+    \noindent
+    \begin{tabular}{l|c}
+    \toprule
+    Total Number of Documents                                         & \upperAZDWMpdfs  \\
+    \midrule
+    Number of Documents with Parsable Origin                          & \numParsableAZDWMpdfs   \\
+    \midrule
+    Number of Documents Originating from a Skimmer Inspection         & \numSKIorigin  \\
+    \midrule
+    Number of Documents Matching the Regular Expression ``[Ss]kimm''  & \numSkimWord  \\
+    \midrule
+    Success Rate Reported by the AZDWM (Unhinted)                     & 1.5\%  \\
+    \bottomrule
+    \end{tabular}
+    \caption{Overview statistics on the documents from AZDWM gas station inspection reports. Only a portion of the documents are parsable. Some non-skimmer inspections include checks for skimmers.}
+    \label{tab:overview-azdwm-stats}
 \end{table}
 
-    PDFs from the AZDWM are stored on a queriable web interface at \url{https://ctutools.azda.gov/dwm/pv/inspection_search.asp}, however, during the course of this study, we found that this web interface did not include all records, and it was easier to pull reports from \url{https://ctutools.azda.gov/PdfOriginals/} via an html parser and batched \texttt{wget} requests.  The reports contain data from internal powerpoints on various subjects to inspections done of gas stations for vapor, correct convience store advertised prices, and other inspections performed by Weights and Measures staff.  For the purposes of this study we are most concerned with the reports on skimming, however, it is not immediately clear from the dataset which reports pertain to skimming.  PDFs follow a naming scheme of \texttt{\{BMF \#\}-\{Inspection \#\}.(pdf|PDF)}, wherein a majority of reports (\upperAZDWMpdfs) follow the upper-cased extension convention.  A BMF, or Business Master File, number is a unique identifier given to each business owning a metering device used to charge for goods or services \cite{azdwmLicensing}.  Thus, in order to classify and analyze these reports, one must look at the PDFs themselves, which contain an ``origin'' header that gives further details on the inspection report.
+A primary goal of this survey is to understand how investigators perform skimmer inspections. For instance, how rigorously inspectors investigate pumps (Section~\ref{sec:inspector-behavior}). It is also useful to quantify the hit rate of skimmer inspections (Section~\ref{sec:document-data-extraction}); this provides a measure of how common skimming is. Additionally, we may quantify how much room for improvement there is in detection methods by measuring how long inspections take to complete (Section~\ref{sec:insp-time-ana}). 
 
-    The goal for this survey is ultimately to discover how inspections for skimmers are performed, their rate of effectiveness, and the current methodologies of skimmer detection.  By extracting from the data a frequency of skimming discovery, it will be possible to quantify the probability of skimmer occurrence.  Additionally, by looking into the data for methodologies of inspection, we can find clues as to the nature of skimming devices, such as the commonality of overlay versus internal skimmers.  We will also be able to see the habits of AZDWM inspectors: whether they check for internal skimmers more than external skimmers, whether they rigorously check all pumps, how often their plans are foiled, and other questions.  An understanding of this dataset in greater depth has led to better insight on the problem of skimming and many fruitful ideas for mitigation 
+\section{Understanding the Documents}\label{sec:understanding-the-documents}
 
-      \section{Understanding the Documents}\label{sec:understanding-the-documents}
-
-    We find in the reports that inspectors oftentimes will not check pumps if there are security seals, special keys, alarms, or ``non-skimmable'' pump types.  Some methodologies of inspection are sound, others are not.  A few reports mention only checking for external skimmers, completely ignoring the internal variety.  Additionally, some reports may have included a check for skimmer, and others may not have; document structure is ambiguous.  Figure~\ref{fig:inspection-with-skimmer} demonstrates an inspection of fueling devices which led to a skimmer, and Figure~\ref{fig:inspection-without-skimmer} shows the opposite.  The only noticable difference between these documents relating to skimmers is the note that in one case they have found the malicious devices, and in the other they have not.
+      Upon examining the PDFs, we find the information is highly unstructured. For example, documents have an inconsistent use of the 198 failure code. This code indicates a skimmer was found. Figure~\ref{fig:198-usages} depicts two different uses of this code. There also exist successful skimmer inspections with no 198 code in the document at all \cite{13529-268466}. Unfortunately, this indicates a single regular expression search for successful investigations is nontrivial. Additionally, there are latent ambiguities in the data collected. Many documents do not state whether a found skimmer was internal or external. They also do not indicate whether a given inspection called in by a gas station owner or other party.
 
 \begin{figure}
     \centering
-    \includegraphics[width=\linewidth]{report_pics/inspection_finding_skimmer}
+    \includegraphics[width=\linewidth]{pics/198-usages.png}
     \caption{
-	    Section of the inspection reports from a skimmer investigation with ambiguity as to whether 
-	    a skimmer was found. \todo{details}
+      Inconsistent use of the 198 error code. In the top report, the code is included in the inspection notes. In the bottom image, a separate field used for fail codes contains the 198.
     }
-    \label{fig:inspection-with-skimmer}
+    \label{fig:198-usages}
 \end{figure}
 
-\begin{figure}
-    \centering
-    \includegraphics[width=\linewidth]{report_pics/inspection_without_skimmer}
-    \caption{
-	    Section of the inspection reports from a skimmer investigation with ambiguity as to whether 
-	    a skimmer was found. \todo{details}
-    }
-    \label{fig:inspection-without-skimmer}
-\end{figure}
-
-    It is unclear that information related to the exact inspection methodology is contained within the report documents, though are some hints in the documents' structure.  For instance, vapor recovery\footnote{Checking the pumps to make sure they do not leak gasoline vapors into the atmosphere.} reports contain a pre-inspection checklist, which includes a check for skimmers (Figure~\ref{fig:check-for-skimmers}).  In cases such as this, answering questions related to the data set requires the exploration of non-primary sources; never be afraid to directly google.  The AZDWM site notes that inspections for skimmers are always performed during routine inspections \cite{azdwmSkimmers}.  Thus, we can be assured that all scheduled inspections included within the data include a check for skimming devices.
+The exact skimmer inspection methodology is not noted in any of the reports. There are, however, hints within the inspection notes and the document structure. For instance, vapor recovery\footnote{Checking the pumps to make sure they do not leak gasoline vapors into the atmosphere.}  reports contain a pre-inspection checklist. This checklist contains a check for skimmers (Figure~\ref{fig:check-for-skimmers}). The reports do not contain information on the whether skimmer investigations occur alongside other inspections; however, the AZDWM site notes skimmer inspections are always performed during pump inspections \cite{azdwmSkimmers}. Thus, any report that includes a pump inspection includes a skimmer check.
 
 \begin{figure}
     \centering
-    \includegraphics[width=\linewidth]{report_pics/inspection_checklist}
+    \includegraphics[width=\linewidth]{pics/inspection-checklist.png}
     \caption{
-	    Section of the inspection reports which demonstrates information on the pre-inspection 
-	    checklist. \todo{details}
+	    Section of the inspection reports which demonstrates information on the pre-inspection checklist. In this case, no skimmer was found.
     }
     \label{fig:check-for-skimmers}
 \end{figure}
@@ -286,7 +287,7 @@ Analysis of the data provided by AZDWM proved to be difficult, but had two prima
 
     \section{Describing Inspections and Skimmers}\label{sec:describing-inspections-skimmers}
 
-    \subsection{Inspector Behavior}
+    \subsection{Inspector Behavior}\label{sec:inspector-behavior}
 
     The method adopted for understanding the human factors involved in skimming investigations was also based upon the methods highlighted above.  However, the amount of information contained in randomly sampled reports on inspector behavior was sparse: it was found that among  \numrandominspbehav randomly chosen documents, only \numinforandinspbehav had legitimate information on how the inspection was preformed, and only \numrandinspbehavskim mentioned skimmers.  This could be improved upon using two heuristic methods: the first being the number of words in the inspection document, with the distribution of word counts over all the PDFs demonstrated in Figure~\ref{fig:word-distribution-all-pdfs}.  The second is searching for the ``skimm'' keyword.  The counts for each of these methods in information recovery are described in Table~\ref{tab:inspbehavnums}.
 
@@ -295,8 +296,9 @@ Analysis of the data provided by AZDWM proved to be difficult, but had two prima
     During this manual analysis, several interesting findings about skimmer inspections were found...
 
     We know they don't check if they dont need to, but do sometimes if they are instructed to, and sometimes they don't check when they should.
+    Tape, locks, alarms. We find in the reports that inspectors oftentimes will not check pumps if there are security seals, special keys, alarms, or ``non-skimmable'' pump types.  Some methodologies of inspection are sound, others are not.  A few reports mention only checking for external skimmers, completely ignoring the internal variety. 
     
-    \subsection{Skimmer Construction}
+    \subsection{Skimmer Construction}\label{sec:skimmer-construction}
 
     Additionally, this analysis led to an increased understanding of skimmer construction ...
 
