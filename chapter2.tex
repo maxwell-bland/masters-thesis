@@ -164,16 +164,52 @@ These correspond to Pressure Decay Test forms, used when testing the pumps for l
 % 	    Example of an inspection report which is not parsable via \texttt{pdftotext}.
 %       In this case, even OCR is unable to infer the handwritten text.
 %     }
-%     \label{fig:handwritten-checklist}
-% \end{figure}
 
-    \subsection{Complications of OCR}\label{sec:complications-of-ocr}
+\subsection{Preforming OCR on~\numNonParsableAZDWMpdfs~PDFS}\label{sec:complications-of-ocr}
 
-    If the purpose is complete understanding of the exact statistics of the data set, a mixture of FSMA will be needed to complete the analysis.  One mistake of this study was to not properly understand and segment the data which needed additional time to process: the choice was blindly made to perform OCR on all the documents, leading to \ectwohoursspent hours of Amazon EC2 time spent on a 72 core machine, a monetary cost of \ectwodollarsspent.
+The OCR to correct the missing ToUnicode CMaps was somewhat effective.
+After performing this analysis, the number of unrecognized origin headers dropped to
+\amountofparsableoriginsafterocr.
+The OCR was performed using \texttt{ocrmypdf} which operatings using the Tesseract library
+\cite{smith2007overview}.
+The \texttt{-clean} and \texttt{--rotate-pages} flags were used for document cleaning and orientation detection.
+The final results table is included in Figure~\ref{tab:final-orig-results}.
 
-    The OCR was somewhat effective; after performing this analysis, the number of documents with an unrecognized origin header dropped \amountofparsableoriginsafterocr.  The OCR was performed using the tool \texttt{ocrmypdf}, which builds upon the Tesseract library.  Despite these final statistics, our initial OCR run did not improve the number of parsed origin headers as much as inspected.  It was later found that additional flags were needed for document cleaning and orientation detection\footnote{\texttt{-clean} and \texttt{--rotate-pages} respectively.}.  This additional run of OCR wasted time and led to a short period of insecurity relating to the ability to parse the data in an automated fashion.  It is important to understand \emph{all} the features of the tools used for data extraction when performing analysis and the number of errors is outside of desired bounds.  In fact, it is possible that adding additional flags to Tesseract's OCR may have made the data analysis far more accurate.  Additionally, this analysis demonstrates the importance of knowing when FSMA is failing, so steps may be taken to prevent wasting time and inaccuracies.  Finally, OCR was performed, inefficiently, on \emph{all} the documents: this was a complete mistake, and a result of not doing proper exploratory data analysis beforehand as a result of a lack of time.  Ideally, the information provided in Table~\ref{tab:num-failed-regex-ocr} would have been used to shrink the amount of time, effort, and money required to perform optical character recognition on these documents. 
+\begin{table}
+    \centering
+    \begin{tabular}{@{}lr@{}}
+    \toprule
+    Origin Header & Number of Documents \\ \midrule
+    SCH           & \finalnumSCHOrig \\
+    SKI           & \finalnumSKIOrig \\
+    COM           & \finalnumCOMOrig \\
+    REI           & \finalnumREIOrig \\ 
+    VDA           & \finalnumVDAOrig \\
+    VAN           & \finalnumVANOrig \\
+    COL           & \finalnumCOLOrig \\
+    SPC           & \finalnumSPCOrig \\ \bottomrule
+    \end{tabular}
+    \caption{
+      Summary of skimmer inspection form data origins and their occurrence rate.
+      Reports are submitted most often for scheduled and skimmer-specific inspections.
+    }
+    \label{tab:final-orig-results}
+\end{table}
 
-    A primary challenge of performing OCR on the documents was layout inference of text within the documents; the inference of the line position to approximate visual position is highly inaccurate.  Figures~\ref{fig:misplaced-pdftotext} and \ref{fig:messy-regex} display the improper text positioning inferred by pdftotext for a document and an abandoned regular expression used for parsing text positioning before a more sophisticated method was attempted.  
+\emph{All} the \numAZDWMpdfs PDFs underwent OCR.
+The analysis could have isolated the~\numNonParsableAZDWMpdfs~ unparsable PDFs only.
+However, it was unclear whether the entire set of PDFS were non-corrupted. 
+Additionally, OCR allowed for parsing the cleanly handwritten reports.
+With EC2, this analysis took \ectwohoursspect hours on a 72 core machine. 
+The cost was \ectwodollarsspent.
+
+A downside of OCR is that it has trouble inferring the layout of text on the page.
+Figure~\ref{fig:misplaced-pdftotext} compares the layout of the original report to it's OCRed duplicate.
+This made the generation of regular expressions for content of the page nontrivial.
+To solve this problem, I developed a more sophisticated tool for text extraction.
+This tool, data-extract-PDF~\cite{dataExtractPdf}, allows the automated extraction of PDF sections.
+Unfortunately, this tool was not used for the final analysis in this project.
+However, another project with a large number of PDFs is a variant of it for content extraction.
 
 \begin{figure}
     \centering
@@ -185,24 +221,22 @@ These correspond to Pressure Decay Test forms, used when testing the pumps for l
     \label{fig:misplaced-pdftotext}
 \end{figure}
 
-\begin{figure}
-    \centering
-    \includegraphics[width=\linewidth]{pics/messy-regex}
-    \caption{
-	    Example of a regex used to attempt to handle all variations in document structure.
-	    \todo{details}
-    }
-    \label{fig:messy-regex}
-\end{figure}
+\subsubsection{Open Problems in Optical Character Recognition}
 
-    In order to counteract difficulties in the organization of raw text data from the output of pdftotext, I built a tool, code-named data-extract-PDF \cite{dataExtractPdf}.  This tool allows the user to select sections of PDFs in an automated manner and ``snip'' them out of the document, or otherwise develop toolkits for automated data entry and extraction.  This tool has proved to be quite useful, and is now being used in two other research projects I am undertaking involving document snippet extraction.
+Additional work is needed on document content extraction. 
+It may be possible to build an inference system which can correct the CMap issues seen in this group of PDFs.
+This would a benefit to search engine document indexing and empirical research.
+Better document layout recognition would also benefit this research.
+Scene text recognition has been a longstanding open problem. 
+The first public data set, the ICDAR Robust Reading challenge, was created in 2003 
+\cite{lucas2003icdar}. 
+However, these data sets focus on images and not on documents.
+Recent advances in Visual Question Answering (VQA) could be used for this purpose.
+Last year, Anderson presented Bottom-Up and Top-Down attention models.
+\cite{anderson2018bottom}.
+These models operate at the level of objects and image regions, rather than uniform grids.
 
-    \subsubsection{Open Problems in Optical Character Recognition}
-
-    Additional work is needed on semantic text recognition systems which directly work with a human user in the performance of document classification.  This could serve to further the cause of empirical research not only in the field of computer science, but in many other industries and in other areas, such as literary theory, biology, and even mathematics.  From the phrase-based analysis, we found that approaches based upon part-of-speech tagging, which look for key uses of semantic information constructs could provide the basis for such natural language processing applications.  Additionally, mechanisms are needed for the inference of missing data from optically read documents, and this is the subject of other research which I am in the process of performing.  Difficulties were also encountered in the OCR system's ability to group sections of text semantically, in terms of boxed content on the page seperated by vertical lines.  Small changes in the understanding that the system provides could improve the inference power of these systems significantly.
-
-
-    \section{Document Data Extraction}\label{sec:document-data-extraction}
+\section{Document Data Extraction}\label{sec:document-data-extraction}
 
 Despite parsing difficulties, the documents contain useful information about skimmer investigations.
 Of particular interest is the number of skimmer inspections which discover skimmers.
@@ -231,11 +265,18 @@ Their reported ``hit" rate for unhinted inspections was
 
     \subsection{Skimmer word included}
 
-    The first attempted method for determining the success rate of skimmer investigations was simply to find reports that had the word ``skimm'' in them and reports which had the words ``no skimm'' in them.  Understandably, this is a highly flawed number, and so we expect the results to be highly deviated from the actual reports of the AZDWM.  Thus, this serves as a straw-man case for the more general technique of phrase-based refinements for NLP statistical mining.  The reported skimmer detection success rate based upon this metric was \skimmerwordbasedsuccessrate.  One limitation of this approach could be that the reports were not linearly differentiable by the simplest word cases alone.  Thus, this approach was extended to a phrase-based analysis.
+    The first attempted method for determining the success rate of skimmer investigations was simply to find reports that had the word ``skimm'' in them and reports which had the words ``no skimm'' in them.
+    Understandably, this is a highly flawed number, and so we expect the results to be highly deviated from the actual reports of the AZDWM.
+    Thus, this serves as a straw-man case for the more general technique of phrase-based refinements for NLP statistical mining.
+    The reported skimmer detection success rate based upon this metric was \skimmerwordbasedsuccessrate.
+    One limitation of this approach could be that the reports were not linearly differentiable by the simplest word cases alone.
+    Thus, this approach was extended to a phrase-based analysis.
 
     \subsection{Phrase-based analysis}
 
-    The phrase-based analysis followed from a sampling of many of the reports which allowed the determination of common phrases used by investigators indicating that a skimmer was found and a skimmer was not found.  The percentage success rate reported by this technique was~\phrasebasedsuccessrate~, which is closer to the ground truth reported by the Arizona department of weights and measures.  The corpus of phrases is included in Table~\ref{tab:phrase-corpus}.
+    The phrase-based analysis followed from a sampling of many of the reports which allowed the determination of common phrases used by investigators indicating that a skimmer was found and a skimmer was not found.
+    The percentage success rate reported by this technique was~\phrasebasedsuccessrate~, which is closer to the ground truth reported by the Arizona department of weights and measures.
+    The corpus of phrases is included in Table~\ref{tab:phrase-corpus}.
 
 \begin{table}
     \centering
@@ -244,11 +285,20 @@ Their reported ``hit" rate for unhinted inspections was
     \label{tab:phrase-corpus}
 \end{table}
 
-    This method proved to be effective given the small number of inspectors in the AZDWM during this time period, which provided some consistency to the results for inspection success rate.  However, it is not clear that this form of modeling would generalize to the entire human population.  In fact, this form of case-based analysis is what led to a plateau in artificial intelligence research in the late 80's and early 90's \cite{norvig2012artificial}.  Thus, I also attempted to evaluate the accuracy of random sampling in data analysis.
+This method proved to be effective given the small number of inspectors in the AZDWM during this time period, which provided some consistency to the results for inspection success rate.
+However, it is not clear that this form of modeling would generalize to the entire human population.
+In fact, this form of case-based analysis is what led to a plateau in artificial intelligence research in the late 80's and early 90's \cite{norvig2012artificial}.
+Thus, I also attempted to evaluate the accuracy of random sampling in data analysis.
 
     \subsection{Random Sampling}
 
-    The next method attempted was random sampling which portrayed a skimmer detection success rate of \randomsamplesuccessrate.  This had a modest standard deviation of \randomsamplestddev, which was within the range of the reported AZDWM numbers to very low error.  Random sampling, therefore, proved to be highly accurate, and in the end, required less time than comparative phrase-based analysis.  Developing a corpora of common phrases is a highly manual task, as was analyzing random samples of the documents.  However, developing the corpora presented above required going through many, many documents.  Unfortunately, data was not collected on the accuracy of the model over time, though Figure~\ref{fig:phrase-based-accuracy-num-terms} gives a measure of the accuracy as phrases were added.  Comparatively, Figure~\ref{fig:random-sampling-accuracy-num-reviewed} gives a measure of the accuracy of the estimate, with standard error, for each document reviewed. 
+    The next method attempted was random sampling which portrayed a skimmer detection success rate of \randomsamplesuccessrate.
+    This had a modest standard deviation of \randomsamplestddev, which was within the range of the reported AZDWM numbers to very low error.
+    Random sampling, therefore, proved to be highly accurate, and in the end, required less time than comparative phrase-based analysis.
+    Developing a corpora of common phrases is a highly manual task, as was analyzing random samples of the documents.
+    However, developing the corpora presented above required going through many, many documents.
+    Unfortunately, data was not collected on the accuracy of the model over time, though Figure~\ref{fig:phrase-based-accuracy-num-terms} gives a measure of the accuracy as phrases were added.
+    Comparatively, Figure~\ref{fig:random-sampling-accuracy-num-reviewed} gives a measure of the accuracy of the estimate, with standard error, for each document reviewed.
 
 \begin{figure}
     \centering
@@ -272,15 +322,23 @@ Their reported ``hit" rate for unhinted inspections was
     \label{fig:random-sampling-accuracy-num-reviewed}
 \end{figure}
 
-    We can see that random sampling is a sound scientific method for document analysis, and the general intuition regarding its efficacy in data analysis is most likely correct.  While other methodologies may be tempting, the author would strongly discourage these other techniques, as they may create bias in the results attained by studies.  However, random sampling with manual analysis is also biased by the observer classifying the samples.  Thus, we also look at the efficacy of total manual inspection of roughly half of the AZDWM reports.
+We can see that random sampling is a sound scientific method for document analysis, and the general intuition regarding its efficacy in data analysis is most likely correct.
+While other methodologies may be tempting, the author would strongly discourage these other techniques, as they may create bias in the results attained by studies.
+However, random sampling with manual analysis is also biased by the observer classifying the samples.
+Thus, we also look at the efficacy of total manual inspection of roughly half of the AZDWM reports.
 
     \subsection{Manual Inspection}
 
-    Finally, there was a time during which manual inspection was used in order to determine the success rate of skimmer investigations.  Unfortunately, this was abandoned halfway due to the monotony of classifying skimmer inspection documents and the time required.  However,~\manualinspectionnumber~documents were still classified, and constituted a semi-random sample of the entire corpus of documents, including all reports from 2016 onward.  The ultimate success rate reported was \manualinspsuccessrate, which is close to the AZDWM reported number.  Thus, manual inspection is accurate, but remains an ineffective manner of exploratory data analysis.
+    Finally, there was a time during which manual inspection was used in order to determine the success rate of skimmer investigations.
+    Unfortunately, this was abandoned halfway due to the monotony of classifying skimmer inspection documents and the time required.
+    However,~\manualinspectionnumber~documents were still classified, and constituted a semi-random sample of the entire corpus of documents, including all reports from 2016 onward.
+    The ultimate success rate reported was \manualinspsuccessrate, which is close to the AZDWM reported number.
+    Thus, manual inspection is accurate, but remains an ineffective manner of exploratory data analysis.
 
     \section{Addressing Biased and Noisy Data}
 
-    In attempting to disambiguate whether an inspection was performed or not, it became apparent through  our sampling of the data that the inspections themselves were biased.  Often, the inspection notes indicated that the inspection was triggered on a hint from a local police department, a service tech, or gas station owners (Figure~\ref{fig:hinted-report}).
+    In attempting to disambiguate whether an inspection was performed or not, it became apparent through  our sampling of the data that the inspections themselves were biased.
+    Often, the inspection notes indicated that the inspection was triggered on a hint from a local police department, a service tech, or gas station owners (Figure~\ref{fig:hinted-report}).
 
 \begin{figure}
     \centering
@@ -293,17 +351,33 @@ Their reported ``hit" rate for unhinted inspections was
     \label{fig:phrase-based-accuracy-num-terms}
 \end{figure}
 
-    We also discovered that there was no linear separability between report types: SKIs and COMs are both triggered by complaints.  The reference documents in Figure~\ref{fig:non-linear-seperability} demonstrate this lack of linear seperability.  Additionally, it is unclear from the documents themselves whether a skimmer inspection was actually performed, although one may have been.  Some reports indicated that there was a pre-inspection checklist including a skimmer investigation, however, not all reports included this.
+We also discovered that there was no linear separability between report types: SKIs and COMs are both triggered by complaints.
+The reference documents in Figure~\ref{fig:non-linear-seperability} demonstrate this lack of linear seperability.
+Additionally, it is unclear from the documents themselves whether a skimmer inspection was actually performed, although one may have been.
+Some reports indicated that there was a pre-inspection checklist including a skimmer investigation, however, not all reports included this.
 
-    To answer this question, we contacted AZDWM, who indicated that a skimmer inspection was performed any time the pumps were opened. However, was this may have been impossible to infer from the reports themselves.  Thus, we performed a seperate analysis which could also determine the rate of skimmer inspections influenced by signal processing. We looked at the incidence of skimmer discovery for each inspector based upon the documents classified during direct manual analysis (perhaps one benefit of manual analysis when compared to random sampling). The results are recorded in Figure~\ref{fig:skim-discover-rate-per-inspect}. This gave us an idea of the baseline skimmer discovery rate per day for each inspector, and allowed us to classify occurrences which may have been biased by a hint, as well as get an idea for how many reports were filed for each inspector. Overall, these findings demonstrate that the obvious statistics may not reveal the underlying character of a dataset, whereas tertiary measurements of the system can still provide indicators of underlying causal mechanisms.
+To answer this question, we contacted AZDWM, who indicated that a skimmer inspection was performed any time the pumps were opened.
+However, was this may have been impossible to infer from the reports themselves.
+Thus, we performed a seperate analysis which could also determine the rate of skimmer inspections influenced by signal processing.
+We looked at the incidence of skimmer discovery for each inspector based upon the documents classified during direct manual analysis (perhaps one benefit of manual analysis when compared to random sampling).
+The results are recorded in Figure~\ref{fig:skim-discover-rate-per-inspect}.
+This gave us an idea of the baseline skimmer discovery rate per day for each inspector, and allowed us to classify occurrences which may have been biased by a hint, as well as get an idea for how many reports were filed for each inspector.
+Overall, these findings demonstrate that the obvious statistics may not reveal the underlying character of a dataset, whereas tertiary measurements of the system can still provide indicators of underlying causal mechanisms.
 
-    Additionally, random sampling could be performed to determine which proportion of documents were hinted.  For the proportion of reports that found skimmers, we found that \randsamplehinted of the reports were hinted, with a standard deviation of \randsamplehintedstddev.  Since the standard deviation was so small, it is fair to multiply this by the success rate in determining the total unhinted skimmer success rate as somewhere around \randsampleultimatesuccess.  This ended up incredibly close to the actual AZDWM reported success rate.
+Additionally, random sampling could be performed to determine which proportion of documents were hinted.
+For the proportion of reports that found skimmers, we found that \randsamplehinted of the reports were hinted, with a standard deviation of \randsamplehintedstddev.
+Since the standard deviation was so small, it is fair to multiply this by the success rate in determining the total unhinted skimmer success rate as somewhere around \randsampleultimatesuccess.
+This ended up close to the actual AZDWM reported success rate.
 
     \section{Describing Inspections and Skimmers}\label{sec:describing-inspections-skimmers}
 
     \subsection{Inspector Behavior}\label{sec:inspector-behavior}
 
-    The method adopted for understanding the human factors involved in skimming investigations was also based upon the methods highlighted above.  However, the amount of information contained in randomly sampled reports on inspector behavior was sparse: it was found that among  \numrandominspbehav randomly chosen documents, only \numinforandinspbehav had legitimate information on how the inspection was preformed, and only \numrandinspbehavskim mentioned skimmers.  This could be improved upon using two heuristic methods: the first being the number of words in the inspection document, with the distribution of word counts over all the PDFs demonstrated in Figure~\ref{fig:word-distribution-all-pdfs}.  The second is searching for the ``skimm'' keyword.  The counts for each of these methods in information recovery are described in Table~\ref{tab:inspbehavnums}.
+    The method adopted for understanding the human factors involved in skimming investigations was also based upon the methods highlighted above.
+    However, the amount of information contained in randomly sampled reports on inspector behavior was sparse: it was found that among  \numrandominspbehav randomly chosen documents, only \numinforandinspbehav had legitimate information on how the inspection was preformed, and only \numrandinspbehavskim mentioned skimmers.
+    This could be improved upon using two heuristic methods: the first being the number of words in the inspection document, with the distribution of word counts over all the PDFs demonstrated in Figure~\ref{fig:word-distribution-all-pdfs}.
+    The second is searching for the ``skimm'' keyword.
+    The counts for each of these methods in information recovery are described in Table~\ref{tab:inspbehavnums}.
 
     It is possible that even more sophisticated methods than word count could have been used, such as the number of legitimate english sentences or English trigrams.
 
@@ -328,7 +402,11 @@ Their reported ``hit" rate for unhinted inspections was
 
     \subsection{Inspector Behavior}
 
-    The method adopted for understanding the human factors involved in skimming investigations was also based upon the methods highlighted above.  However, the amount of information contained in randomly sampled reports on inspector behavior was sparse: it was found that amongst \numrandominspbehav randomly chosen documents, only \numinforandinspbehav had legitimate information on how the inspection was preformed, and only \numrandinspbehavskim mentioned skimmers.  This could be improved upon using two heuristic methods: the first being the number of words in the inspection document, with the distribution of word counts over all the PDFs demonstrated in Figure~\ref{fig:word-distribution-all-pdfs}.  The second is searching for the ``skimm'' keyword.  The counts for each of these methods in information recovery are described in Table~\ref{tab:inspbehavnums}.
+    The method adopted for understanding the human factors involved in skimming investigations was also based upon the methods highlighted above.
+    However, the amount of information contained in randomly sampled reports on inspector behavior was sparse: it was found that amongst \numrandominspbehav randomly chosen documents, only \numinforandinspbehav had legitimate information on how the inspection was preformed, and only \numrandinspbehavskim mentioned skimmers.
+    This could be improved upon using two heuristic methods: the first being the number of words in the inspection document, with the distribution of word counts over all the PDFs demonstrated in Figure~\ref{fig:word-distribution-all-pdfs}.
+    The second is searching for the ``skimm'' keyword.
+    The counts for each of these methods in information recovery are described in Table~\ref{tab:inspbehavnums}.
 
     It is possible that even more sophisticated methods than word count could have been used, such as the number of legitimate english sentences or English trigrams.
 
@@ -353,7 +431,9 @@ Their reported ``hit" rate for unhinted inspections was
 
     \subsection{Inspection Time Analysis}\label{sec:insp-time-ana}
     
-    Taking the lessons learned from the previous section, we continued to perform random sampling analysis of the rest of the documents.  This gave us key insights  into the inspection time distribution of inspectors.  Many inspection times were handwritten and the OCR algorithm was not able to infer the times written (\nonparsableinspectiontimes).
+    Taking the lessons learned from the previous section, we continued to perform random sampling analysis of the rest of the documents.
+    This gave us key insights  into the inspection time distribution of inspectors.
+    Many inspection times were handwritten and the OCR algorithm was not able to infer the times written (\nonparsableinspectiontimes).
 
     The distribution of inspection times as reported by documents that were classified as having performed skimmer inspections is included in \ref{fig:time-dist-plot}.
 
@@ -365,9 +445,15 @@ Their reported ``hit" rate for unhinted inspections was
 
     \section{Errors}
 
-    The false claims of some reports indicate the traditional notion of flawed authorial perspective.  In general, however, there will always be errors, which indicates that even amongst these heuristic classifications of inspector behavior, one must be careful not to generalize.  Different inspectors write reports and perform inspections in different ways, but if each of these manners is classified for each inspector, then oddities may be ironed out.  This is the type of analysis error that depends on the data set. 
+    The false claims of some reports indicate the traditional notion of flawed authorial perspective.
+    In general, however, there will always be errors, which indicates that even amongst these heuristic classifications of inspector behavior, one must be careful not to generalize.
+    Different inspectors write reports and perform inspections in different ways, but if each of these manners is classified for each inspector, then oddities may be ironed out.
+    This is the type of analysis error that depends on the data set.
 
-    Other errors may be quantified.  For instance \numdocumentsinspunclassifiable reports were not classifiable as a skimmer or non-skimmer inspection.  It is also the case, such as in \url{rep}, that it is unclear the exact steps the inspector used to inspect, although they found skimmers.  Based upon exploratory data analysis, however, you can make compelling arguments that some data is non-attainable.
+    Other errors may be quantified.
+    For instance \numdocumentsinspunclassifiable reports were not classifiable as a skimmer or non-skimmer inspection.
+    It is also the case, such as in \url{rep}, that it is unclear the exact steps the inspector used to inspect, although they found skimmers.
+    Based upon exploratory data analysis, however, you can make compelling arguments that some data is non-attainable.
 
     - Always will be errors. The law of large numbers assumes these smooth out in a large
     enough sample size
@@ -375,7 +461,8 @@ Their reported ``hit" rate for unhinted inspections was
     - Plots of the types of inspections
     - Looking at whether inspectors actually inspect
 
-    Different inspectors write reports in different ways, but these number of ways becomes constant in a larger dataset. Could use machine learnign to learn one inspector's style, there will be oddities, yada...
+    Different inspectors write reports in different ways, but these number of ways becomes constant in a larger dataset.
+    Could use machine learnign to learn one inspector's style, there will be oddities, yada...
 
     We can leverage the fact that these inspectors are going to thousands of gas stations and manually inspecting the pumps in order to get data on the nature of skimmers, and help to find a few.
 
@@ -396,7 +483,20 @@ Their reported ``hit" rate for unhinted inspections was
 
     \section{Related and Future Work}
 
-    In this chapter, both keyword and phrase-based analysis were inaccurate in semantic classification. Random sampling was closer in determining the success rate of skimmer investigations. These same techniques were used to understand skimmer construction and investigator behavior. Since the documents are rich text by investigators, manual analysis was still needed to answer questions such as "Do inspectors check pumps with security seals?". A system for answering these queries would reduce the need for manual analysis. Similar tasks are already performed by the content-based filtering of recommendation systems. The classic content-based recommender system uses word frequency and a user profile (e.g. demographics) \cite{pazzani1999framework}. A query could take the place of a user profile. However, this approach requires a semantic understanding of the document and the query.  A 2011 survey by Lops notes several approaches for representing this semantic information. An example would be weighting documents by the frequency of rare terms \cite{lops2011content}. However, at the time of writing, a system for performing the analyses presented by Lops in a free, quick, and automated manner does not seem to exist. In our case, Mechanical Turk or a trained ANN may have been enough to answer most questions. However, answering each question would have required a separate round of testing or training.
+    In this chapter, both keyword and phrase-based analysis were inaccurate in semantic classification.
+    Random sampling was closer in determining the success rate of skimmer investigations.
+    These same techniques were used to understand skimmer construction and investigator behavior.
+    Since the documents are rich text by investigators, manual analysis was still needed to answer questions such as "Do inspectors check pumps with security seals?".
+    A system for answering these queries would reduce the need for manual analysis.
+    Similar tasks are already performed by the content-based filtering of recommendation systems.
+    The classic content-based recommender system uses word frequency and a user profile (e.g. demographics) \cite{pazzani1999framework}.
+    A query could take the place of a user profile.
+    However, this approach requires a semantic understanding of the document and the query.
+    A 2011 survey by Lops notes several approaches for representing this semantic information.
+    An example would be weighting documents by the frequency of rare terms \cite{lops2011content}.
+    However, at the time of writing, a system for performing the analyses presented by Lops in a free, quick, and automated manner does not seem to exist.
+    In our case, Mechanical Turk or a trained ANN may have been enough to answer most questions.
+    However, answering each question would have required a separate round of testing or training.
 
 \section{Summary}
 \section{Acknowledgements}
