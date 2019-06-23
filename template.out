@@ -18,47 +18,43 @@
 \BOOKMARK [1][-]{section.2.1}{Survey Background}{chapter.2}% 18
 \BOOKMARK [1][-]{section.2.2}{Understanding the Documents}{chapter.2}% 19
 \BOOKMARK [2][-]{subsection.2.2.1}{Understanding Document Origins}{section.2.2}% 20
-\BOOKMARK [2][-]{subsection.2.2.2}{Complications of OCR}{section.2.2}% 21
+\BOOKMARK [2][-]{subsection.2.2.2}{Preforming OCR on 11,787 PDFS}{section.2.2}% 21
 \BOOKMARK [1][-]{section.2.3}{Document Data Extraction}{chapter.2}% 22
-\BOOKMARK [2][-]{subsection.2.3.1}{Skimmer word included}{section.2.3}% 23
-\BOOKMARK [2][-]{subsection.2.3.2}{Phrase-based analysis}{section.2.3}% 24
+\BOOKMARK [2][-]{subsection.2.3.1}{Keyword-based Analysis}{section.2.3}% 23
+\BOOKMARK [2][-]{subsection.2.3.2}{Phrase-based Analysis}{section.2.3}% 24
 \BOOKMARK [2][-]{subsection.2.3.3}{Random Sampling}{section.2.3}% 25
-\BOOKMARK [2][-]{subsection.2.3.4}{Manual Inspection}{section.2.3}% 26
-\BOOKMARK [1][-]{section.2.4}{Addressing Biased and Noisy Data}{chapter.2}% 27
-\BOOKMARK [1][-]{section.2.5}{Describing Inspections and Skimmers}{chapter.2}% 28
-\BOOKMARK [2][-]{subsection.2.5.1}{Inspector Behavior}{section.2.5}% 29
-\BOOKMARK [2][-]{subsection.2.5.2}{Skimmer Construction}{section.2.5}% 30
-\BOOKMARK [2][-]{subsection.2.5.3}{Inspector Behavior}{section.2.5}% 31
-\BOOKMARK [2][-]{subsection.2.5.4}{Skimmer Construction}{section.2.5}% 32
-\BOOKMARK [2][-]{subsection.2.5.5}{Inspection Time Analysis}{section.2.5}% 33
-\BOOKMARK [2][-]{subsection.2.5.6}{Biased Inspection Frequency}{section.2.5}% 34
-\BOOKMARK [1][-]{section.2.6}{Errors}{chapter.2}% 35
-\BOOKMARK [1][-]{section.2.7}{Lessons Learned}{chapter.2}% 36
-\BOOKMARK [1][-]{section.2.8}{The Design of Bluetana}{chapter.2}% 37
-\BOOKMARK [1][-]{section.2.9}{Related and Future Work}{chapter.2}% 38
-\BOOKMARK [1][-]{section.2.10}{Summary}{chapter.2}% 39
-\BOOKMARK [1][-]{section.2.11}{Acknowledgements}{chapter.2}% 40
-\BOOKMARK [0][-]{chapter.3}{A Better Mechanism: Bluetana}{}% 41
-\BOOKMARK [1][-]{section.3.1}{Introduction}{chapter.3}% 42
-\BOOKMARK [1][-]{section.3.2}{Related Work}{chapter.3}% 43
-\BOOKMARK [1][-]{section.3.3}{Construction of an Android Application for Skimmer Detection}{chapter.3}% 44
-\BOOKMARK [2][-]{subsection.3.3.1}{Key Limitations}{section.3.3}% 45
-\BOOKMARK [2][-]{subsection.3.3.2}{The Benefits and Challenges of Crowdsourcing}{section.3.3}% 46
-\BOOKMARK [1][-]{section.3.4}{Bluetooth Protocol Features and Analysis}{chapter.3}% 47
-\BOOKMARK [1][-]{section.3.5}{Collecting Information}{chapter.3}% 48
-\BOOKMARK [2][-]{subsection.3.5.1}{Pseudo-Sensor Networking}{section.3.5}% 49
-\BOOKMARK [2][-]{subsection.3.5.2}{Data Collection Integrity and Implementation}{section.3.5}% 50
-\BOOKMARK [2][-]{subsection.3.5.3}{Kiosk Implementation}{section.3.5}% 51
-\BOOKMARK [2][-]{subsection.3.5.4}{Lessons Learned in Remote Updates}{section.3.5}% 52
-\BOOKMARK [2][-]{subsection.3.5.5}{Data Visualization and Analysis Design}{section.3.5}% 53
-\BOOKMARK [1][-]{section.3.6}{Skimmer Flagging Workflow}{chapter.3}% 54
-\BOOKMARK [1][-]{section.3.7}{Potential Drawbacks and Difficulties with Future Skimmer Detection}{chapter.3}% 55
-\BOOKMARK [2][-]{subsection.3.7.1}{Correct Classification}{section.3.7}% 56
-\BOOKMARK [2][-]{subsection.3.7.2}{Information Overload}{section.3.7}% 57
-\BOOKMARK [1][-]{section.3.8}{Open Problems}{chapter.3}% 58
-\BOOKMARK [1][-]{section.3.9}{Summary}{chapter.3}% 59
-\BOOKMARK [1][-]{section.3.10}{Acknowledgements}{chapter.3}% 60
-\BOOKMARK [0][-]{chapter.4}{Conclusion}{}% 61
-\BOOKMARK [1][-]{section.4.1}{On Crowdsourced Application Design}{chapter.4}% 62
-\BOOKMARK [1][-]{section.4.2}{On Effective Data Analysis from Heterogeneous Sources}{chapter.4}% 63
-\BOOKMARK [0][-]{chapter*.26}{Bibliography}{}% 64
+\BOOKMARK [2][-]{subsection.2.3.4}{Inspection Report Generation Bias}{section.2.3}% 26
+\BOOKMARK [1][-]{section.2.4}{Describing Inspections and Skimmers}{chapter.2}% 27
+\BOOKMARK [2][-]{subsection.2.4.1}{Inspector Behavior}{section.2.4}% 28
+\BOOKMARK [2][-]{subsection.2.4.2}{Skimmer Construction}{section.2.4}% 29
+\BOOKMARK [2][-]{subsection.2.4.3}{Inspection Time Analysis}{section.2.4}% 30
+\BOOKMARK [1][-]{section.2.5}{Errors}{chapter.2}% 31
+\BOOKMARK [1][-]{section.2.6}{Lessons Learned}{chapter.2}% 32
+\BOOKMARK [1][-]{section.2.7}{The Design of Bluetana}{chapter.2}% 33
+\BOOKMARK [1][-]{section.2.8}{Related and Future Work}{chapter.2}% 34
+\BOOKMARK [1][-]{section.2.9}{Summary}{chapter.2}% 35
+\BOOKMARK [1][-]{section.2.10}{Acknowledgements}{chapter.2}% 36
+\BOOKMARK [0][-]{chapter.3}{A Better Mechanism: Bluetana}{}% 37
+\BOOKMARK [1][-]{section.3.1}{Introduction}{chapter.3}% 38
+\BOOKMARK [1][-]{section.3.2}{Related Work}{chapter.3}% 39
+\BOOKMARK [1][-]{section.3.3}{Construction of an Android Application for Skimmer Detection}{chapter.3}% 40
+\BOOKMARK [2][-]{subsection.3.3.1}{Key Limitations}{section.3.3}% 41
+\BOOKMARK [2][-]{subsection.3.3.2}{The Benefits and Challenges of Crowdsourcing}{section.3.3}% 42
+\BOOKMARK [1][-]{section.3.4}{Bluetooth Protocol Features and Analysis}{chapter.3}% 43
+\BOOKMARK [1][-]{section.3.5}{Collecting Information}{chapter.3}% 44
+\BOOKMARK [2][-]{subsection.3.5.1}{Pseudo-Sensor Networking}{section.3.5}% 45
+\BOOKMARK [2][-]{subsection.3.5.2}{Data Collection Integrity and Implementation}{section.3.5}% 46
+\BOOKMARK [2][-]{subsection.3.5.3}{Kiosk Implementation}{section.3.5}% 47
+\BOOKMARK [2][-]{subsection.3.5.4}{Lessons Learned in Remote Updates}{section.3.5}% 48
+\BOOKMARK [2][-]{subsection.3.5.5}{Data Visualization and Analysis Design}{section.3.5}% 49
+\BOOKMARK [1][-]{section.3.6}{Skimmer Flagging Workflow}{chapter.3}% 50
+\BOOKMARK [1][-]{section.3.7}{Potential Drawbacks and Difficulties with Future Skimmer Detection}{chapter.3}% 51
+\BOOKMARK [2][-]{subsection.3.7.1}{Correct Classification}{section.3.7}% 52
+\BOOKMARK [2][-]{subsection.3.7.2}{Information Overload}{section.3.7}% 53
+\BOOKMARK [1][-]{section.3.8}{Open Problems}{chapter.3}% 54
+\BOOKMARK [1][-]{section.3.9}{Summary}{chapter.3}% 55
+\BOOKMARK [1][-]{section.3.10}{Acknowledgements}{chapter.3}% 56
+\BOOKMARK [0][-]{chapter.4}{Conclusion}{}% 57
+\BOOKMARK [1][-]{section.4.1}{On Crowdsourced Application Design}{chapter.4}% 58
+\BOOKMARK [1][-]{section.4.2}{On Effective Data Analysis from Heterogeneous Sources}{chapter.4}% 59
+\BOOKMARK [0][-]{chapter*.26}{Bibliography}{}% 60
