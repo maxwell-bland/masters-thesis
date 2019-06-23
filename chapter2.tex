@@ -244,7 +244,7 @@ A manual analysis of all the documents would be required to answer this question
 Thus, several alternative approximations were attempted.
 Each alternative method and the resulting approximation are detailed in Table
 \ref{tab:success-rates}.
-Details about these methods are included in the next four sections.
+Details about these methods are included in the next three sections.
 The AZDWM was also contacted directly for the ground truth data. 
 Their reported ``hit" rate for unhinted inspections was 
 \percentSkimmersToStations.
@@ -256,27 +256,31 @@ Their reported ``hit" rate for unhinted inspections was
     Approximation Method  & Number of Documents Reported & Approximated Unhinted Success Rate \\ \hline
     Keyword Analysis      &                              &                                    \\
     Phrase-based Analysis &                              &                                    \\
-    Random Sampling       &                              &                                    \\
-    Manual Inspection     &                              &                                    \\ \hline
+    Random Sampling       &                              &                                    \\ \hline
     \end{tabular}
     \caption{The various skimmer detection success rates as reported by different methods for document analysis. \todo{details}}
     \label{tab:success-rates}
 \end{table}
 
-    \subsection{Skimmer word included}
+    \subsection{Keyword-based Analysis}
 
-    The first attempted method for determining the success rate of skimmer investigations was simply to find reports that had the word ``skimm'' in them and reports which had the words ``no skimm'' in them.
-    Understandably, this is a highly flawed number, and so we expect the results to be highly deviated from the actual reports of the AZDWM.
-    Thus, this serves as a straw-man case for the more general technique of phrase-based refinements for NLP statistical mining.
-    The reported skimmer detection success rate based upon this metric was \skimmerwordbasedsuccessrate.
-    One limitation of this approach could be that the reports were not linearly differentiable by the simplest word cases alone.
-    Thus, this approach was extended to a phrase-based analysis.
+    The first attempt at skimmer detection rate estimation was keyword based.
+The intuition was to subtract the reports with the words ``no skimm" from the reports with the word ``skimm". 
+This number deviates from the ground truth for trivial reasons. 
+For one, the pre-inspection checklist includes the term ``skimm". 
+The reported skimmer detection success rate based upon this metric was \skimmerwordbasedsuccessrate.
+The actual detection rate for unhinted inspections is much lower. 
+Using a keyword search misses semantic details of the content. 
+For instance, the skimmer may have been discovered before AZDWM was called.
 
-    \subsection{Phrase-based analysis}
+    \subsection{Phrase-based Analysis}
 
-    The phrase-based analysis followed from a sampling of many of the reports which allowed the determination of common phrases used by investigators indicating that a skimmer was found and a skimmer was not found.
-    The percentage success rate reported by this technique was~\phrasebasedsuccessrate~, which is closer to the ground truth reported by the Arizona department of weights and measures.
-    The corpus of phrases is included in Table~\ref{tab:phrase-corpus}.
+A phrase-based approach was also evaluated. 
+The corpus of phrases is included in Table~\ref{tab:phrase-corpus}.
+To build this table, the documents were randomly sampled and manually analyzed.
+More complex signifiers allowed for the preservation of more semantic content.
+In this case, the percentage discovery rate reported by this technique was~\phrasebasedsuccessrate. 
+This is closer to the the ground truth reported by the AZDWM. However, it still suffers many of the same drawbacks as the keyword based approach.
 
 \begin{table}
     \centering
@@ -285,20 +289,27 @@ Their reported ``hit" rate for unhinted inspections was
     \label{tab:phrase-corpus}
 \end{table}
 
-This method proved to be effective given the small number of inspectors in the AZDWM during this time period, which provided some consistency to the results for inspection success rate.
-However, it is not clear that this form of modeling would generalize to the entire human population.
-In fact, this form of case-based analysis is what led to a plateau in artificial intelligence research in the late 80's and early 90's \cite{norvig2012artificial}.
-Thus, I also attempted to evaluate the accuracy of random sampling in data analysis.
+This method was effective because a small number of investigators generated the reports.
+The phrases captured the individual idiosyncrasies of investigators. 
+Each inspector will, for a time, have ``their way" of signifying whether they found a skimmer or not.
+However, phrase based analysis remains inaccurate. 
+The are many subtle indicator phrases that an inspection was not random. 
+Some of these, such as ``owner found skimmer", can be captured.
+Others are report-specific and cannot be included without manual analysis of every document.
+This makes it difficult to determine whether the phrase corpus is unbiased.
 
-    \subsection{Random Sampling}
+\subsection{Random Sampling}
 
-    The next method attempted was random sampling which portrayed a skimmer detection success rate of \randomsamplesuccessrate.
-    This had a modest standard deviation of \randomsamplestddev, which was within the range of the reported AZDWM numbers to very low error.
-    Random sampling, therefore, proved to be highly accurate, and in the end, required less time than comparative phrase-based analysis.
-    Developing a corpora of common phrases is a highly manual task, as was analyzing random samples of the documents.
-    However, developing the corpora presented above required going through many, many documents.
-    Unfortunately, data was not collected on the accuracy of the model over time, though Figure~\ref{fig:phrase-based-accuracy-num-terms} gives a measure of the accuracy as phrases were added.
-    Comparatively, Figure~\ref{fig:random-sampling-accuracy-num-reviewed} gives a measure of the accuracy of the estimate, with standard error, for each document reviewed.
+The next method attempted was random sampling. 
+This determined a skimmer detection success rate of \randomsamplesuccessrate
+($\sigma = \randomsamplestdev$).
+Manual analysis of the sampled documents allowed the removal of hinted reports.
+This approach also won out in the time taken to perform the analysis. 
+Collecting a reasonable corpus for the phrase-based analysis took more time. 
+These approaches show different prediction convergence behavior as time progresses.
+Random sampling ``zeroes in" on a mean estimate, while phrase-based analysis moves step-wise. 
+The latter of the two is only rigorous under restricted circumstances.
+Figures \ref{fig:phrase-based-accuracy-num-terms} and \ref{fig:random-sampling-accuracy-num-reviewed} provide this comparison. 
 
 \begin{figure}
     \centering
@@ -322,23 +333,16 @@ Thus, I also attempted to evaluate the accuracy of random sampling in data analy
     \label{fig:random-sampling-accuracy-num-reviewed}
 \end{figure}
 
-We can see that random sampling is a sound scientific method for document analysis, and the general intuition regarding its efficacy in data analysis is most likely correct.
-While other methodologies may be tempting, the author would strongly discourage these other techniques, as they may create bias in the results attained by studies.
-However, random sampling with manual analysis is also biased by the observer classifying the samples.
-Thus, we also look at the efficacy of total manual inspection of roughly half of the AZDWM reports.
+These findings show the inadequacy of naive automated approaches in empirical study.
+These approaches can be tempting in their formality.
+However, in some domains, they do not provide a rigorous enough analysis. 
+Manual inspection can also contain biases, but evaluating this can be difficult.
+In this study, the accuracy of random sampling suggests inspection bias was not an issue.
 
-    \subsection{Manual Inspection}
+\section{Addressing Biased and Noisy Data}
 
-    Finally, there was a time during which manual inspection was used in order to determine the success rate of skimmer investigations.
-    Unfortunately, this was abandoned halfway due to the monotony of classifying skimmer inspection documents and the time required.
-    However,~\manualinspectionnumber~documents were still classified, and constituted a semi-random sample of the entire corpus of documents, including all reports from 2016 onward.
-    The ultimate success rate reported was \manualinspsuccessrate, which is close to the AZDWM reported number.
-    Thus, manual inspection is accurate, but remains an ineffective manner of exploratory data analysis.
-
-    \section{Addressing Biased and Noisy Data}
-
-    In attempting to disambiguate whether an inspection was performed or not, it became apparent through  our sampling of the data that the inspections themselves were biased.
-    Often, the inspection notes indicated that the inspection was triggered on a hint from a local police department, a service tech, or gas station owners (Figure~\ref{fig:hinted-report}).
+In attempting to disambiguate whether an inspection was performed or not, it became apparent through  our sampling of the data that the inspections themselves were biased.
+Often, the inspection notes indicated that the inspection was triggered on a hint from a local police department, a service tech, or gas station owners (Figure~\ref{fig:hinted-report}).
 
 \begin{figure}
     \centering
@@ -399,35 +403,6 @@ This ended up close to the actual AZDWM reported success rate.
     Necessary checklists also note that GSM skimmers are possible.
 
     Some potential MAC addresses were noted in reports, but these claims were later shown to be non-instantiable.
-
-    \subsection{Inspector Behavior}
-
-    The method adopted for understanding the human factors involved in skimming investigations was also based upon the methods highlighted above.
-    However, the amount of information contained in randomly sampled reports on inspector behavior was sparse: it was found that amongst \numrandominspbehav randomly chosen documents, only \numinforandinspbehav had legitimate information on how the inspection was preformed, and only \numrandinspbehavskim mentioned skimmers.
-    This could be improved upon using two heuristic methods: the first being the number of words in the inspection document, with the distribution of word counts over all the PDFs demonstrated in Figure~\ref{fig:word-distribution-all-pdfs}.
-    The second is searching for the ``skimm'' keyword.
-    The counts for each of these methods in information recovery are described in Table~\ref{tab:inspbehavnums}.
-
-    It is possible that even more sophisticated methods than word count could have been used, such as the number of legitimate english sentences or English trigrams.
-
-    During this manual analysis, several interesting findings about skimmer inspections were found...
-
-    We know they don't check if they dont need to, but do sometimes if they are instructed to, and sometimes they don't check when they should.
-    
-    \subsection{Skimmer Construction}
-
-    Additionally, this analysis led to an increased understanding of skimmer construction ...
-
-    Many of the reports noted that the skimmers were bluetooth
-
-    From photos of the modules, we were able to infer the manufacturer, and use this to build and initial list of questionable OUIs.
-
-    We note that criminals need some way to exfiltrate the data, and Bluetooth is cheap.
-
-    Necessary checklists also note that GSM skimmers are possible.
-
-    Some potential MAC addresses were noted in reports, but these claims were later shown to be non-instantiable.
-
 
     \subsection{Inspection Time Analysis}\label{sec:insp-time-ana}
     
