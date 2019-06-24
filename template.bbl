@@ -48,7 +48,11 @@ Brian Krebs.
 Brian Krebs.
 \newblock All about skimmers, 2016.
 
-\bibitem[Kre17]{skimmer_GSM_enabled}
+\bibitem[Kre17a]{atm_shimmers}
+Brian Krebs.
+\newblock Atm shimmers target chip based cards, January 2017.
+
+\bibitem[Kre17b]{skimmer_gsm_enabled}
 Brian Krebs.
 \newblock Gas pump skimmer sends card data via text, July 2017.
 

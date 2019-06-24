@@ -1,49 +1,108 @@
 \chapter{Introduction}\label{chap:1}
 \begin{quote}
-    ``In conclusion, \emph{Rhagoletis pomonella} may not be that unconventional after all.'' \\ 
----Jefferey Feder, \textit{The Apple Maggot Fly, Rhagoletis Pomonella}
+  ``In conclusion, \emph{Rhagoletis pomonella} may not be that unconventional after all.'' \\ 
+  ---Jefferey Feder, \textit{The Apple Maggot Fly, Rhagoletis Pomonella}
 \end{quote}
 
-Criminals use skimmers to steal card data during transactions at Point-of-Sale terminals. The devices are attached either externally or internally to the terminal \cite{all_about_skimmers}. External skimmers use a second magnetic read head to steal card information. Criminals hide external skimmers inside a fake face-plate \cite{scaife2018fear}. Internal skimmers are Bluetooth capable and attached to wiring inside the terminal \cite{gang_rigged_pumps_bluetooth}. In gas pumps, this wiring carries unencrypted card information \cite{avoid_card_skimmers_pump}. Skimmer construction is simple, usually consisting of a microcontroller and EEPROM. Internal skimmers oftentimes have Bluetooth module for data exfiltration. Each skimmer captures around 30 cards and makes around \$15,000 per day: the typical card is defrauded for \$500~\cite{rippleshot2018fraud, armenian}.  
+Criminals use skimmers to steal card data during transactions at Point-of-Sale terminals.
+The devices are attached either externally or internally to the terminal \cite{all_about_skimmers}.
+External skimmers use a second magnetic read head to steal card information.
+Criminals hide external skimmers inside a fake face-plate \cite{scaife2018fear}.
+Internal skimmers are Bluetooth capable and attached to wiring inside the terminal \cite{gang_rigged_pumps_bluetooth}.
+In gas pumps, this wiring carries unencrypted card information \cite{avoid_card_skimmers_pump}.
+Skimmer construction is simple, usually consisting of a microcontroller and EEPROM.
+Internal skimmers oftentimes have Bluetooth module for data exfiltration.
+Each skimmer captures around 30 cards and makes around \$15,000 per day: the typical card is defrauded for \$500~\cite{rippleshot2018fraud, armenian}.
 
-There has been no survey of how investigators currently detect internal skimmers. This thesis provides this survey and a discussion of exploratory data analysis. The resulting contribution is an understanding of investigator behavior and skimmer installation. This information was used to develop an Android application, Bluetana, for skimmer detection. Bluetana detected 64 skimming devices, many of which would have otherwise remained undiscovered. The second half of this thesis discusses the construction and operation of Bluetana.
+There has been no survey of how investigators currently detect internal skimmers.
+This thesis provides this survey and a discussion of exploratory data analysis.
+The resulting contribution is an understanding of investigator behavior and skimmer installation.
+This information was used to develop an Android application, Bluetana, for skimmer detection.
+Bluetana detected 64 skimming devices, many of which would have otherwise remained undiscovered.
+The second half of this thesis discusses the construction and operation of Bluetana.
 
-Chapter~\ref{chap:1} of this thesis addresses provides background on skimming and skimmer detection. Chapter~\ref{chap:2} discusses data analysis and surveys current skimmer investigative techniques. Chapter~\ref{chap:3} describes the implementation and design of Bluetana. Chapter~\ref{chap:4} concludes and addresses the epistemological background of this thesis.
+Chapter~\ref{chap:1} of this thesis addresses provides background on skimming and skimmer detection.
+Chapter~\ref{chap:2} discusses data analysis and surveys current skimmer investigative techniques.
+Chapter~\ref{chap:3} describes the implementation and design of Bluetana.
+Chapter~\ref{chap:4} concludes and addresses the epistemological background of this thesis.
 
 \section{Background on Gas Pump Skimming}
 
-Many devices can host an internal skimmer, but gas pumps are a major target. 972 skimmers were recovered from gas stations in Florida and 148 in Arizona in 2018. Each of these devices is a potential source of hundreds of dollars in fraud per day \cite{hristov, cristea, alisuretove, aqel}. Despite the financial impact, gas station skimmers are sparse and difficult to detect. Arizona inspection reports indicate approximately~\percentSkimmersToStations~of stations, randomly sampled, have a skimmer (Section~\ref{sec:document-data-extraction}). 
+Many devices can host an internal skimmer, but gas pumps are a major target.
+972 skimmers were recovered from gas stations in Florida and 148 in Arizona in 2018.
+Each of these devices is a potential source of hundreds of dollars in fraud per day \cite{hristov, cristea, alisuretove, aqel}.
+Despite the financial impact, gas station skimmers are sparse and difficult to detect.
+Arizona inspection reports indicate approximately~\percentSkimmersToStations~of stations, randomly sampled, have a skimmer (Section~\ref{sec:document-data-extraction}).
 
-Part of the reason why gas pumps are targeted is that it is not difficult to access pump internals. News reports have shown criminals installing internal skimmers in less than 30 seconds \cite{quickInstall}. Newer pumps restrict access to the internals, but are only installed in around 30\% of gas stations. \footnote{The result of a survey of 0.5\%  of the gas stations in the United States via Google Maps. } It can be difficult to catch criminals in the act of collection as well. Skimmers built with a Bluetooth module can use a serial port to allow for remote data collection. This prevents criminals from needing to open up the pump again.  
+Part of the reason why gas pumps are targeted is that it is not difficult to access pump internals.
+News reports have shown criminals installing internal skimmers in less than 30 seconds \cite{quickInstall}.
+Newer pumps restrict access to the internals, but are only installed in around 30\% of gas stations.
+\footnote{The result of a survey of 0.5\%  of the gas stations in the United States via Google Maps.}
+It can be difficult to catch criminals in the act of collection as well.
+Skimmers built with a Bluetooth module can use a serial port to allow for remote data collection.
+This prevents criminals from needing to open up the pump again.
 
-Skimmers are also hidden within the pump infrastructure to avoid physical detection. They are often covered in tape the same color as the ribbon wire they are connected to, such as in Figure~\ref{fig:taped-skimmer}. This can lead investigators to miss skimmers during routine inspections. This occured once during the evaluation of Bluetana. In this case, Bluetana determined a skimmer was in a pump. However, \emph{two} separate physical inspections were needed for recovery of the skimmer. The device had been hidden in a hard-to-reach crevice of the machine.
+Skimmers are also hidden within the pump infrastructure to avoid physical detection.
+They are often covered in tape the same color as the ribbon wire they are connected to, such as in Figure~\ref{fig:taped-skimmer}.
+This can lead investigators to miss skimmers during routine inspections.
+This occured once during the evaluation of Bluetana.
+In this case, Bluetana determined a skimmer was in a pump.
+However, \emph{two} separate physical inspections were needed for recovery of the skimmer.
+The device had been hidden in a hard-to-reach crevice of the machine.
 
 \begin{figure}
   \centering
-    \includegraphics[width=0.5\textwidth]{./pics/skimmerinpump.png}
+  \includegraphics[width=0.5\textwidth]{./pics/skimmerinpump.png}
   \caption{A skimmer taped the same color as the ribbon wire it is attached to.}
   \label{fig:taped-skimmer}
 \end{figure}
 
 \section{Methodologies of Detection}
 
-Without wireless scanning, internal skimmer detection requires physical inspection of pump internals. Inspections take an average of thirty minutes and can still fail (Section~\ref{sec:inspector-behavior}). Inspections are also not completely random. Credit companies, law enforcement, and gas station owners can provide skimmer location hints (Section~\ref{sec:understanding-the-documents}).
+Without wireless scanning, internal skimmer detection requires physical inspection of pump internals.
+Inspections take an average of thirty minutes and can still fail (Section~\ref{sec:inspector-behavior}).
+Inspections are also not completely random.
+Credit companies, law enforcement, and gas station owners can provide skimmer location hints (Section~\ref{sec:understanding-the-documents}).
 
-Applications and tools for the detection of skimmers have begun to emerge. In 2018, the Skimreaper tool was developed for detecting external skimmers \cite{scaife2018fear}. The tool works by detecting  the secondary read head of external skimmers. Additionally, gas station owners can install alarm systems on pump access panels \cite{flintloc}. Android applications for detecting Bluetooth-enabled skimmers also exist \cite{skimPlus}. However, they have been shown to be ineffective \cite{scaife2019rogue}. These applications do not leverage the same sophisticated feature set as Bluetana (Section~\ref{sec:skimmer-flagging-workflow}). Skimmers using other wireless technologies, such as GSM, have also been found \cite{skimmer_gsm_enabled}. Discussions with law enforcement have indicated that these technologies are much less common. 
+Applications and tools for the detection of skimmers have begun to emerge.
+In 2018, the Skimreaper tool was developed for detecting external skimmers \cite{scaife2018fear}.
+The tool works by detecting  the secondary read head of external skimmers.
+Additionally, gas station owners can install alarm systems on pump access panels \cite{flintloc}.
+Android applications for detecting Bluetooth-enabled skimmers also exist \cite{skimPlus}.
+However, they have been shown to be ineffective \cite{scaife2019rogue}.
+These applications do not leverage the same sophisticated feature set as Bluetana (Section~\ref{sec:skimmer-flagging-workflow}).
+Skimmers using other wireless technologies, such as GSM, have also been found \cite{skimmer_gsm_enabled}.
+Discussions with law enforcement have indicated that these technologies are much less common.
 
 \section{Contributions}
 
-This thesis details the development of an effective skimmer detection mechanism. It demonstrates how a careful survey of current investigative techniques can provide insight. It also describes the challenges with implementing a crowd-sourced data collection platform. This platform continues to see use by government inspectors across the United States. Finally, this work describes how Bluetana led to the detection of 64 skimmers.
+This thesis details the development of an effective skimmer detection mechanism.
+It demonstrates how a careful survey of current investigative techniques can provide insight.
+It also describes the challenges with implementing a crowd-sourced data collection platform.
+This platform continues to see use by government inspectors across the United States.
+Finally, this work describes how Bluetana led to the detection of 64 skimmers.
 
-    \subsection{Survey of Current Skimmer Detection Methodologies}
+\subsection{Survey of Current Skimmer Detection Methodologies}
 
-Chapter~\ref{chap:2} surveys \upperAZDWMpdfs~gas station inspection reports from the Arizona Weights and Measures Department. Classifying and understanding these documents required a sophisticated technical pipeline (Section~\ref{sec:document-data-extraction}). The chapter also provides an analysis of the data recovered. The discoveries of this chapter motivate the development of Bluetana. The challenges and lessons learned suggest fruitful avenues of future work (Section~\ref{sec:effective-data-analysis}).
+Chapter~\ref{chap:2} surveys \upperAZDWMpdfs~gas station inspection reports from the Arizona Weights and Measures Department.
+Classifying and understanding these documents required a sophisticated technical pipeline (Section~\ref{sec:document-data-extraction}).
+The chapter also provides an analysis of the data recovered.
+The discoveries of this chapter motivate the development of Bluetana.
+The challenges and lessons learned suggest fruitful avenues of future work (Section~\ref{sec:chap2-related}).
 
-    \subsection{Design and Implementation of Bluetooth Skimmer Detection}
+\subsection{Design and Implementation of Bluetooth Skimmer Detection}
 
-    Chapter~\ref{chap:3} details the design of Bluetana and its data collection and analysis. This reveals how the application detects skimmers using Bluetooth. The chapter also provides insight into the development of crowd-sourced applications for research. The section concludes with open problems relating to skimmer detection.
-
+Chapter~\ref{chap:3} details the design of Bluetana and its data collection and analysis.
+This reveals how the application detects skimmers using Bluetooth.
+The chapter also provides insight into the development of crowd-sourced applications for research.
+The section concludes with open problems relating to skimmer detection.
 
 \section{Research Scope}
 
-    Skimming remains an open problem and the source of millions of dollars worth of fraud each year. \cite{rippleshot2018fraud}. This work gives insight on skimmer detection and prevention mechanisms. The next wave of research on skimming can start from these initial findings. For now, Bluetooth-based skimmer detection is an effective improvement over physical inspection alone. Systems like Bluetana and SkimReaper are a crucial step towards internal skimmer prevention. However, further work is needed to solve the problem of skimming.
+Skimming remains an open problem and the source of millions of dollars worth of fraud each year
+\cite{rippleshot2018fraud}.
+This work gives insight on skimmer detection and prevention mechanisms.
+Systems like Bluetana and SkimReaper are a crucial step towards internal skimmer prevention.
+The next wave of research on skimming can start from these initial findings.
+For now, Bluetooth-based skimmer detection is an effective improvement over physical inspection alone.
+However, further work will be needed to solve the problem of skimming.
