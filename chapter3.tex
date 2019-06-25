@@ -76,42 +76,46 @@ For now, only stations with at least one measurable Bluetooth device appear in o
 
 \subsection{The Benefits and Challenges of Crowdsourcing}
 
-Detection of skimmers requires a significant amount of leg work, and requires visiting a large number of gas stations in order to pick up on the background noise of what skimmers look like.
-Thus, crowdsourcing this application was neccessary for the completion of this study.
-The mechanisms to do so involved getting buy-in from government investigators and packaging the application in such a way as to make use of the tool in skimmer detection painless.
-This involved several iterations on the application's design, as well as the implementation of remote live update mechanisms in both directions.
+Detection of skimmers requires a significant amount of travel.
+One must visit a large number of stations to find even a single skimmer. 
+Thus, crowd-sourcing Bluetana was necessary for the completion of this study.
+This required the applications adoption by the users and making the design easy to use.
+It also required sophisticated mechanisms for remote updates from and to the phone.
 
-
-Chief among the neccessary implementation details for crowdsourced applications is a seamless, infalliable remote update mechanism.
-On application boot, the phone makes an API query to our server for a new application version, and attempts to download the new application if possible using Android's \texttt{DownloadManager} API, which resumes downloads even in the case of interrupted connections.
+Bluetan implements a seamless, infallible remote update mechanism.
+On application boot, the phone makes an API query to our server for a new application version.
+If one is found, the app attempts to download the new application if possible using Android's \texttt{DownloadManager} API.
+This allows the app to resume downloading even with a shoddy connection.
 The Play Store was avoided due to the sensitivity of the application.
-So long as the application is signed by the same key which signed the previous application, no issues are encountered when trying to update from a non-Play Store server.
-The application also checks for updates in the case of any fatal exception, so that if a broken update is pushed to any of the phones, before exiting, the entire update mechanism can proceed if neccessary.
-A message is also presented to the user in this case asking them to send an error report to us for bug fixing.
+Serving remote updates in this manner causes no issue beyond the initial install.
+This initial install requires the user to ``enable untrusted apps". 
+The application also checks for updates before closing if a fatal exception occurs.
+In this case, the application can recover in case a broken update is pushed to the phones.
 
+Another challenge is providing the API endpoints for file upload and download.
+Coding these routes securely and efficiently takes time (and isn't much fun).
+So facsimile endpoints were created by hosting files on Google Drive.
+This requires some care in distribution and control of API keys.
+However, these endpoints provided timestamps on data, dynamic content, and speedy hosting.
+For research projects, this is a counter-intuitive but robust infrastructural route. 
+A separate scraper can be written to parse uploaded files into a SQL database.
+The Drive did start lagging on direct access from the \emph{browser} after some time.
+Otherwise, no significant (non-ethical) issues were encountered using Drive in this manner.
 
-Another challenge of hosting a crowdsourced application is providing a secure route for file upload and download to the application remotely, which means desinging secure API endpoints for use by users of the application.
-Suprisingly this was done via hosting many of the files on Google Drive by using a two-stage process for validating that the application was legitimate and could access the API key, we were able to segment file access and use Google's existing infrastructure (somewhat counter to its intended use) as a secure endpoint for our application.
-Doing so made secure upload and download a breeze, and provided mechanisms for checking file version recency and mechanism without needing to implement these end points ourselves.
-For research projects, this is counterintuitively a great infrastructural route, since most data can be exchanged through Drive files, accesses are reasonably fast, and a seperate back-end mechanism can be used to scrape the data and add it into a legitimate database.
-The Drive did start lagging on direct access from the browser after some time, but this could have been prevented via simple mechanisms.
-Honestly, no significant (disregarding ethics) issues were encountered using Drive in this manner.
-
-
-There are many other features which could be noted, but among the most challenging to implement was a kiosk mode for the application as this required having the application specifications shift themselves in response to whether a particular file was loaded on the phone.
-The kiosk mode itself was intended as ease of use for investigators.
-Kiosk mode made it so that it was impossible to accidentally exit the Bluetana application (the application replaced the home screen), and the application was started at start up.
-Designing a single APK which can operate both as a replacement for the home screen and as a stand alone application does not seem to be something Android was designed to accomodate, and requires an in-app reboot of the app to trigger.
-This would not have been an issue were it not for Android's build in life-cycle management system for ``fragments", which are subapplication elements of the main application.
-These fragments get garbage collected and enter into different states in response to user interactions with the application, such as putting the application into the background and closing the application.
-Moreover, different manufacturers' versions of the Android operating system tend to manage fragments in different ways.
-The fragment lifecycle caused significant issues on initial boot-up, since the application would become partially loaded, discarded, and then reloaded during the process of start up.
-This led to latent issues with fragment lifecycle management which could not be resolved due to dependencies on already implemented management of Bluetooth scanning.
-
-
-In the end, a better design would have been to implement the Bluetooth scanning and all ``business logic" portions of the application as background services, and to have the front-end of the application discardable at every moment.
-Not only would this have made implementation of Kiosk mode easier, it would have also made it easier to perform desired changes to the user interface.
-
+Of Bluetana's front-end features, the most challenging to implement was a kiosk mode.
+This mode makes Bluetana the only application accessible on the phone.
+Kiosk mode prevents accidental exit from Bluetana and misuse of the phone.
+Making a separate APK for this mode would complicate version control.
+Thus, I implemented it as a dynamic feature of the application.
+Bluetana looks for the existence of an inaccessible-without-root file to enter this mode.
+It then swaps the APK's application manifest description to allow extended permissions. 
+Complications arose in life-cycle management at startup.
+Running an application as the home screen causes partial garbage-collection at inopportune times.
+The application's initial implementation tied Bluetooth scanning to \emph{fragments} rather than \emph{services}.
+Fragments are UI layers intended to be discarded.
+Thus, background tasks should almost always be implemented as services. 
+These are lifecycle-independent data producers which the UI can consume.
+This led to more development time making Kiosk mode stable.
 
 \section{Bluetooth Scanning Implementation}
 

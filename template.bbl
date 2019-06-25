@@ -27,7 +27,7 @@ Maxwell Bland.
 
 \bibitem[Bro18]{7690-290206}
 Michael Brooks.
-\newblock Inspection #290206, March 2018.
+\newblock Inspection \#290206, March 2018.
 
 \bibitem[{Cri}16]{cristea}
 {Criminal Complaint, USA v Cristea et al, 4:16cr182}.
@@ -137,16 +137,21 @@ FlintLoc Technologies.
 \bibitem[{The}17]{armenian}
 {The Newnan Times-Herald}.
 \newblock Armenian skimmer leader pleads guilty.
-\newblock \url {
-  http://times-herald.com/news/2015/06/armenian-skimmer-leader-pleads-guilty},
+\newblock \url
+  {http://times-herald.com/news/2015/06/armenian-skimmer-leader-pleads-guilty},
   July 2017.
 
 \bibitem[Wea16]{20340-269297}
 A.M. Weaver.
-\newblock Inspection #269297, January 2016.
+\newblock Inspection \#269297, January 2016.
 
 \bibitem[Wet16]{13529-268466}
 Linda Wetzel.
-\newblock Inspection #268466, June 2016.
+\newblock Inspection \#268466, June 2016.
+
+\bibitem[Won05]{wong2005potential}
+Lih~Wern Wong.
+\newblock Potential bluetooth vulnerabilities in smartphones.
+\newblock In {\em AISM}, pages 123--132. Citeseer, 2005.
 
 \end{thebibliography}
