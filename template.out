@@ -37,7 +37,7 @@
 \BOOKMARK [1][-]{section.3.3}{Construction of an Android Application for Skimmer Detection}{chapter.3}% 37
 \BOOKMARK [2][-]{subsection.3.3.1}{Key Limitations}{section.3.3}% 38
 \BOOKMARK [2][-]{subsection.3.3.2}{The Benefits and Challenges of Crowdsourcing}{section.3.3}% 39
-\BOOKMARK [1][-]{section.3.4}{Bluetooth Protocol Features and Analysis}{chapter.3}% 40
+\BOOKMARK [1][-]{section.3.4}{Bluetooth Scanning Implementation}{chapter.3}% 40
 \BOOKMARK [1][-]{section.3.5}{Collecting Information}{chapter.3}% 41
 \BOOKMARK [2][-]{subsection.3.5.1}{Pseudo-Sensor Networking}{section.3.5}% 42
 \BOOKMARK [2][-]{subsection.3.5.2}{Data Collection Integrity and Implementation}{section.3.5}% 43

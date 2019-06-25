@@ -1,267 +1,288 @@
 \chapter{A Better Mechanism: Bluetana}\label{chap:3}
-    \section{Introduction}
-As was seen in the last section, many skimming devices seemed to be Bluetooth enabled.
- This motivated the development of an application, Bluetana, for skimmer detection, in order to prevent fraud and protect consumers.
- At the end of Bluetana's development cycle, it was deployed to over twenty government investigators, and was responsible for the recovery of over 60 skimmers.
- The fraud prevented by Bluetana could amount to anywhere between several hundred thousand and millions of dollars \cite{}.
- In this section, I will detail the development of Bluetana, the features of the application, and the application's implementation, as well as some features of the design not noted in the original Bluetana application.
- I will also detail some of the mistakes made during the development process, with the hope that someone googling similar terms to these may stumble upon the information provided here and avoid the same mistakes.
- 
+\section{Introduction}
+In the last chapter, AZDWM documents revealed many skimming devices are Bluetooth enabled.
+This motivated the development of an Android application, Bluetana, for skimmer detection.  
+Bluetana was ultimately deployed to over twenty government investigators. 
+The application was also responsible for the recovery of over 60 skimmers.
+The fraud prevented is in the range of hundreds of thousands to millions of dollars 
+(Section~\ref{sec:background-on-skimming}).
+In this chapter, I detail the development of Bluetana.
+I also detail the set of systems allowing for the application's crowd-sourced deployment.
+For educational purposes, I also note some of the mistakes made during implementation.
 
-Moreover, I will discuss the notion of a crowdsourced skimmer detection application, and what was required in order to make such an application possible.
- This includes the implementation of a ``kiosk" mode, which renders Bluetana the only app that can be used on the phone, a method of providing a remote update API, and some tricks and tips for developing secure applications by leveraging existing consumer infrastructure.
- By setting up a live remote update mechanism in both directions, the phones running Bluetana became a pseudo sensor network, and allowed for some of the first insights (as far as the author is aware) into the Bluetooth environment of everyday life.
- Some concern was also allocated to the problem of data collection integrity: caching mechanisms were provided to the phone so that collected records would upload to the database at a later point even if connection was unavailable or shoddy at the precise time of collection.
+Many features made Bluetana usable in the field by a modest number of inspectors.
+This includes the implementation of a \emph{kiosk} mode. 
+Kiosk mode made Bluetana the only accessible application on the phone.
+This ensured inspectors didn't misuse the phones or accidentally close the application.
+Another necessity were a fast, accessible-anywhere API endpoints.
+This allowed us to push remote updates and get live reports from the phones.
+To build this server, we cleverly leveraged existing consumer infrastructure.
+Finally, I built caching mechanisms into the application for collected records. 
+This guaranteed scan records would not be lost until they were successfully uploaded. 
 
+Beyond implementation, this chapter details the front-end features added to the application.
+Many of these systems were critical in spurring skimmer investigations during inspections. 
+The chapter gives a full description of the mechanisms used highlighting suspicious devices.
+These mechanisms are undergoing constant change, and must adapt as skimmers adapt.
+Thus, I conclude with a discussion of correct classification.
+Classification remains difficult due to the number of Bluetooth devices seen by inspectors.
 
-Finally, this chapter explores some of the front-end features that were added to the application in order to spur skimmer investigations when a suspicious device is seen, and the back-end neccessary to support these front-end features.
- It details the device highlighting that was also covered in \cite{}, and how this back end process is actualy implemented, including the infrastructure for the creation of a hit-list and the circumventions added in order to allow for this feature despite the protections of the Android operating system.
- Particular difficulty is present due to the fact that we desired some of the files to be inaccessible without root priviledges to the phone.
- The chapter concludes with a discussion of concerns over correct skimmer classification and how we dealt with a large number of records coming into our API routes for preservation and querying.
+\section{Related Work}
 
-    \section{Related Work}
+There do exist systems and tools currently on the market for skimmer detection.
+One example, developed by Scaife et al., is SkimReaper, a device for detecting external skimmers
+\cite{scaife2018fear}.
+This credit-card shaped device can detect the second read head of external skimmers.
+However, this device cannot detect internal skimmers.
+Other skimmer detection apps leveraging Bluetooth also exist on the app store.
+Scaife et al. reviewed these applications in a survey of skimmer protection mechanisms
+\cite{scaife2019rogue}.
+They found these applications use a limited feature set in detection.
+The apps match potential skimmers by MAC, name, or attempting to connect.
+Apps attempting to connect to the device are most concerning.
+This can remove forensic evidence recording the last paired MAC address.
 
-Several other skimmer detection apps and apps for bluetooth scanning exist on the market at the time of writing, but none that are designed specifically for data collection, neccessitating an in-house design.
+\section{Construction of an Android Application for Skimmer Detection}
 
-Detail the numerous skimmer detection apps that exist on the market at the current point in time...
+Most of the ``skimmer detection" work is actually back-end data analysis.
+Thus, the front-end design of a skimmer detection application is trivial. 
+The application approximates a run-of-the-mill Bluetooth scanner. 
+Bluetana consists of two pages, a scan page and settings page. 
+In total, the application has \numberofbluetanafiles files and \numberoflinesbluetana lines of code. 
+The primary page allows the user to choose to turn scanning on or off and show a list of nearby Bluetooth devices.
 
-    \section{Construction of an Android Application for Skimmer Detection}
+The settings page allows for the user to adjust the behavior of scanning and the application. 
+Inspectors can set the app to scan only while the phone is connected to power. 
+This makes starting a scan as easy as plugging the phone in and preserves battery.
+Another option, to start the app at boot-up, makes data collection more robust.
+By requiring less user interaction, we increase the probability that users scan.
+The settings page also provides versioning metadata and several override switches.
+These are provided in case there are bugs in the application.
 
-Since most of the ``skimmer detection" work is actually back-end data analysis and not really the result of live flagging, designing a skimmer detection application is roughly the same as designing a bluetooth scanning application with additionaly configuration options.
- The application itself consists of two pages, a scan page and settings page, on the front end and \numberofbluetanafiles files and \numberoflinesbluetana lines of code of support infrastructure.
- The primary scan pages is designed to allow the user to choose to turn scanning on or off and show a list of records that populate with the nearby Bluetooth devices.
- We also collected records on wireless access points for a time but disabled this feature for the investigators using the application.
- 
+\subsection{Key Limitations}
 
-The settings page allows for the user to adjust the scan time duration, from the default of ``android default" to shorter scan times, which have been shown as adequate for the discovery of a high percentage of devices in many peices of relevant literature \cite{}.
- It also has a key feature, ``scan while connected to power only" and ``start app at start-up" which allowed investigators to turn the phone on, plug it in, and forget about it while proceeding with their normal gas station inspection routine.
- This page also provides some metadata and an override switch which will force a check for updates.
- 
+Using Android for skimmer detection has one major drawback.
+Bluetooth Service Discovery Protocol (SDP) look-ups require a connection to the other device.
+SDP features offered by a device are an effective method of fingerprinting 
+\cite{wong2005potential}.
+As mentioned above, connecting to a skimmer can destroy useful forensic evidence.
+It may be possible to circumvent this restriction by sacrificing application stability.
+Due to stability concerns, I did not implement these workarounds.
 
-        \subsection{Key Limitations}
+A key limitation to Bluetana specifically was the lack of constant geolocation recording.
+Records were not recorded from gas stations with no Bluetooth devices.
+Location recording could be used to better assess Bluetooth's prevalence.
+For now, only stations with at least one measurable Bluetooth device appear in our analysis.
 
-The application itself had one key limitation due to the Android API's requirement that a connection to a device is established before performing a Bluetooth Service Discovery Protocol (SDP) lookup of a device's Bluetooth services.
- Since skimmers record a set of previously connected MAC addresses, this potentially useful feature of the Bluetooth protocol, which has been used in prior fingerprinting studies \cite{}, was left out of the application in all iterations.
- During a cursory search, it seemed that it may be possible to still perform the SDP lookup via reflection, circumventing some of the API restrictions, or a native code module \cite{}, however, this had the potential to reduce application stability over time (the entire study spanned more than a year), and this approach was abandoned.
-
-
-The other key limitation was the application's non-persistence of geolocation records even in cases where there was no Bluetooth device present.
- A button existed on the main page to do so, the user could press on their current geolocation to record such a record, however, it may have been useful to record these records for further analysis of the number of gas stations where no Bluetooth device was present.
- This feature wasn't included due to time constraints.
- 
-
-        \subsection{The Benefits and Challenges of Crowdsourcing}
+\subsection{The Benefits and Challenges of Crowdsourcing}
 
 Detection of skimmers requires a significant amount of leg work, and requires visiting a large number of gas stations in order to pick up on the background noise of what skimmers look like.
- Thus, crowdsourcing this application was neccessary for the completion of this study.
- The mechanisms to do so involved getting buy-in from government investigators and packaging the application in such a way as to make use of the tool in skimmer detection painless.
- This involved several iterations on the application's design, as well as the implementation of remote live update mechanisms in both directions.
+Thus, crowdsourcing this application was neccessary for the completion of this study.
+The mechanisms to do so involved getting buy-in from government investigators and packaging the application in such a way as to make use of the tool in skimmer detection painless.
+This involved several iterations on the application's design, as well as the implementation of remote live update mechanisms in both directions.
 
 
 Chief among the neccessary implementation details for crowdsourced applications is a seamless, infalliable remote update mechanism.
- On application boot, the phone makes an API query to our server for a new application version, and attempts to download the new application if possible using Android's \texttt{DownloadManager} API, which resumes downloads even in the case of interrupted connections.
- The Play Store was avoided due to the sensitivity of the application.
- So long as the application is signed by the same key which signed the previous application, no issues are encountered when trying to update from a non-Play Store server.
- The application also checks for updates in the case of any fatal exception, so that if a broken update is pushed to any of the phones, before exiting, the entire update mechanism can proceed if neccessary.
- A message is also presented to the user in this case asking them to send an error report to us for bug fixing.
+On application boot, the phone makes an API query to our server for a new application version, and attempts to download the new application if possible using Android's \texttt{DownloadManager} API, which resumes downloads even in the case of interrupted connections.
+The Play Store was avoided due to the sensitivity of the application.
+So long as the application is signed by the same key which signed the previous application, no issues are encountered when trying to update from a non-Play Store server.
+The application also checks for updates in the case of any fatal exception, so that if a broken update is pushed to any of the phones, before exiting, the entire update mechanism can proceed if neccessary.
+A message is also presented to the user in this case asking them to send an error report to us for bug fixing.
 
 
 Another challenge of hosting a crowdsourced application is providing a secure route for file upload and download to the application remotely, which means desinging secure API endpoints for use by users of the application.
- Suprisingly this was done via hosting many of the files on Google Drive by using a two-stage process for validating that the application was legitimate and could access the API key, we were able to segment file access and use Google's existing infrastructure (somewhat counter to its intended use) as a secure endpoint for our application.
- Doing so made secure upload and download a breeze, and provided mechanisms for checking file version recency and mechanism without needing to implement these end points ourselves.
- For research projects, this is counterintuitively a great infrastructural route, since most data can be exchanged through Drive files, accesses are reasonably fast, and a seperate back-end mechanism can be used to scrape the data and add it into a legitimate database.
- The Drive did start lagging on direct access from the browser after some time, but this could have been prevented via simple mechanisms.
- Honestly, no significant (disregarding ethics) issues were encountered using Drive in this manner.
- 
+Suprisingly this was done via hosting many of the files on Google Drive by using a two-stage process for validating that the application was legitimate and could access the API key, we were able to segment file access and use Google's existing infrastructure (somewhat counter to its intended use) as a secure endpoint for our application.
+Doing so made secure upload and download a breeze, and provided mechanisms for checking file version recency and mechanism without needing to implement these end points ourselves.
+For research projects, this is counterintuitively a great infrastructural route, since most data can be exchanged through Drive files, accesses are reasonably fast, and a seperate back-end mechanism can be used to scrape the data and add it into a legitimate database.
+The Drive did start lagging on direct access from the browser after some time, but this could have been prevented via simple mechanisms.
+Honestly, no significant (disregarding ethics) issues were encountered using Drive in this manner.
+
 
 There are many other features which could be noted, but among the most challenging to implement was a kiosk mode for the application as this required having the application specifications shift themselves in response to whether a particular file was loaded on the phone.
- The kiosk mode itself was intended as ease of use for investigators.
- Kiosk mode made it so that it was impossible to accidentally exit the Bluetana application (the application replaced the home screen), and the application was started at start up.
- Designing a single APK which can operate both as a replacement for the home screen and as a stand alone application does not seem to be something Android was designed to accomodate, and requires an in-app reboot of the app to trigger.
- This would not have been an issue were it not for Android's build in life-cycle management system for ``fragments", which are subapplication elements of the main application.
- These fragments get garbage collected and enter into different states in response to user interactions with the application, such as putting the application into the background and closing the application.
- Moreover, different manufacturers' versions of the Android operating system tend to manage fragments in different ways.
- The fragment lifecycle caused significant issues on initial boot-up, since the application would become partially loaded, discarded, and then reloaded during the process of start up.
- This led to latent issues with fragment lifecycle management which could not be resolved due to dependencies on already implemented management of Bluetooth scanning.
+The kiosk mode itself was intended as ease of use for investigators.
+Kiosk mode made it so that it was impossible to accidentally exit the Bluetana application (the application replaced the home screen), and the application was started at start up.
+Designing a single APK which can operate both as a replacement for the home screen and as a stand alone application does not seem to be something Android was designed to accomodate, and requires an in-app reboot of the app to trigger.
+This would not have been an issue were it not for Android's build in life-cycle management system for ``fragments", which are subapplication elements of the main application.
+These fragments get garbage collected and enter into different states in response to user interactions with the application, such as putting the application into the background and closing the application.
+Moreover, different manufacturers' versions of the Android operating system tend to manage fragments in different ways.
+The fragment lifecycle caused significant issues on initial boot-up, since the application would become partially loaded, discarded, and then reloaded during the process of start up.
+This led to latent issues with fragment lifecycle management which could not be resolved due to dependencies on already implemented management of Bluetooth scanning.
 
 
 In the end, a better design would have been to implement the Bluetooth scanning and all ``business logic" portions of the application as background services, and to have the front-end of the application discardable at every moment.
- Not only would this have made implementation of Kiosk mode easier, it would have also made it easier to perform desired changes to the user interface.
- 
+Not only would this have made implementation of Kiosk mode easier, it would have also made it easier to perform desired changes to the user interface.
 
-    \section{Bluetooth Protocol Features and Analysis}
 
-Bluetooth scanning itself is handled through a \texttt{BluetoothAdapter} class within the Android API.
- This allows direct control over the Bluetooth scanning portions of the application, and allows semi-direct control of the hardware itself.
- Due to differences in Bluetooth drivers across phones, we found the behavior of this class to be inconsistent across devices, requiring, for some phones, that the Bluetooth adapter itself be powered on and off occansionally in order to force it to repeat a scan.
- Thankfully, these issues were not encountered in the Kiosk-mode enabled phones given to inspectors for the primary study.
- 
+\section{Bluetooth Scanning Implementation}
+
+The Android API's \texttt{BluetoothAdapter} class handles Bluetooth scanning.
+Methods of this object allow semi-direct control of the phone's Bluetooth module.
+Unfortunately, there are minor variations of this class for different hardware. 
+I worked around these inconsistencies to make the application portable.
 
 The Bluetooth adapter provides another class with Android ``Intents", somewhat like callbacks, that provide a \texttt{BluetoothDevice} class object whenever a Bluetooth device is recovered.
- Details of the fields of the device are recorded in Table~\ref{tab:bluetooth-device-fields}; functions are visible at the documentation referenced by \cite{}.
- The rather messy code used for data collection is in Figure~\ref{fig:messy-device-code}.
- All of this data was eventually recorded into a CSV with \numfieldsCSV fields, detailed in Table~\ref{tab:csv-fields}.
- The CSV contained a list of all the Bluetooth devices a given phone saw, as well as meta-data for usage in data anaylsis, such as geolocation.
-
+Details of the fields of the device are recorded in Table~\ref{tab:bluetooth-device-fields}; functions are visible at the documentation referenced by \cite{}.
+The rather messy code used for data collection is in Figure~\ref{fig:messy-device-code}.
+All of this data was eventually recorded into a CSV with \numfieldsCSV fields, detailed in Table~\ref{tab:csv-fields}.
+The CSV contained a list of all the Bluetooth devices a given phone saw, as well as meta-data for usage in data anaylsis, such as geolocation.
 
 The CSV itself can really be extended to become an arbitrary file, and thus used in future studies leveraging the existing Bluetana application.
- In fact, the data collection pipeline and Bluetana are currently being used for ongoing research in other projects relating to Bluetooth at UCSD.
+In fact, the data collection pipeline and Bluetana are currently being used for ongoing research in other projects relating to Bluetooth at UCSD.
 
-
-    \section{Collecting Information}
+\section{Collecting Information}
 
 As was mentioned in a previous section, this data was eventually uploaded to Google Drive, where it was then parsed into a PSQL database.
- It is important to note the considerations that went into to the data collection in order to ensure the robust delivery and storage of the collected Bluetooth scan data.
- First, data was collected on the phone until it reached a file size of \filesizebeforecompression.
- This data was continuously appended to a persistent working data file stored in a private application data directory.
- Once the maximum file size is reached, the file is compressed, so that it has a size of approximately \filesizeaftercompression, for faster upload.
- After the file is compressed, it is added to a folder which queues files pending a successful upload.
- Upon the establishment of any form of data connection, the application will attempt to upload the files in this folder one by one; upon success, the files are added to a ``finished" cache.
- In case the data is lost, this data is recoverable from the phone, and the folder is also removable in the case where the application begins to eat all the space on the phone.
- 
+It is important to note the considerations that went into to the data collection in order to ensure the robust delivery and storage of the collected Bluetooth scan data.
+First, data was collected on the phone until it reached a file size of \filesizebeforecompression.
+This data was continuously appended to a persistent working data file stored in a private application data directory.
+Once the maximum file size is reached, the file is compressed, so that it has a size of approximately \filesizeaftercompression, for faster upload.
+After the file is compressed, it is added to a folder which queues files pending a successful upload.
+Upon the establishment of any form of data connection, the application will attempt to upload the files in this folder one by one; upon success, the files are added to a ``finished" cache.
+In case the data is lost, this data is recoverable from the phone, and the folder is also removable in the case where the application begins to eat all the space on the phone.
+
 
 This mechanism allowed users to provide live updates to the Drive, which was then scraped every fifteen minutes for new files, which were in turn fed to a PSQL database which in turn was fed through a series of SQL and python scripts to perform various levels of analytics detailed in \cite{}.
 
 
 Additionally, the application contained a hitlist coded into it with specific features of skimming devices as decided by the developers, which determined whether records within the app were highlighted to indicate that they were potentially skimmers (Figure~\ref{fig:bluetana-highlight-screenshot}.
- This hitlist was dynamically updated by pulling from the Google Drive at application start up or via a ``force update" button on the settings page.
- The coding of this hitlist and methods for Skimmer detection as an API route was crucial to providing live updates to the application as more information was discovered about skimmers in a low-key manner which did not require user interaction.
+This hitlist was dynamically updated by pulling from the Google Drive at application start up or via a ``force update" button on the settings page.
+The coding of this hitlist and methods for Skimmer detection as an API route was crucial to providing live updates to the application as more information was discovered about skimmers in a low-key manner which did not require user interaction.
 
 
-        \subsection{Pseudo-Sensor Networking}
+\subsection{Pseudo-Sensor Networking}
 
 In a way, Bluetana creates a Pseudo-Sensor network of android phones distributed over the WAN which allows for large-scale data collection for many gas stations.
- The total number of gas stations visited across just four of the states in which Bluetan visited is summarized in Table~\ref{tab:bluetana-states-visited}.
- It was also able to provide highly accurate heat maps of device location, allowing for skimmers to be localized to the gas pumps themselves, offering an additional validation step for the application, as can be seen in Figure~\ref{fig:heatmap-localization}.
- It was also able to provide the descriptive statistics required to isolate over sixty skimming devices, as detailed in \cite{}.
+The total number of gas stations visited across just four of the states in which Bluetan visited is summarized in Table~\ref{tab:bluetana-states-visited}.
+It was also able to provide highly accurate heat maps of device location, allowing for skimmers to be localized to the gas pumps themselves, offering an additional validation step for the application, as can be seen in Figure~\ref{fig:heatmap-localization}.
+It was also able to provide the descriptive statistics required to isolate over sixty skimming devices, as detailed in \cite{}.
 
 
 The quick update mechanisms allowed us to design notifications for the team whenever devices near stations popped up as well as a web interface for browsing collected records and a live leaderboard of visited stations, the front page of which is depicted in Figure~\ref{fig:bluetana-website}.
- This provided integral for discovering new aspects of skimmers, as station records could be investigated live for interesting devices and could be retroactively inspected in cases where skimmers were found.
+This provided integral for discovering new aspects of skimmers, as station records could be investigated live for interesting devices and could be retroactively inspected in cases where skimmers were found.
 
 
-        \subsection{Data Collection Integrity and Implementation}
+\subsection{Data Collection Integrity and Implementation}
 
 Aside from a consistent upload mechanism, aspects of the Bluetooth protocol related to collection integrity and implementation should be noted.
- The primary two factors involved in errors in data collection would be the amount of time dedicated to the scanning of a gas station and the possibility of bad signal quality as many skimmers are installed inside of gas pumps and are therefore somewhat attenuated in terms of signal quality during bluetooth scans.
+The primary two factors involved in errors in data collection would be the amount of time dedicated to the scanning of a gas station and the possibility of bad signal quality as many skimmers are installed inside of gas pumps and are therefore somewhat attenuated in terms of signal quality during bluetooth scans.
 
 
 Scan time was a concern for a while, as detecting Bluetooth devices during drive-bys would not be possible if the Android operating system did not explore both frequency trains for responses while near a gas station; this was part of the motivation for cutting off the visit analysis in \cite{} to be greater than fifteen seconds.
- We also found that some versions of the Android OS had a longer Bluetooth scan time than the \numsecondsscantimebluetoothstandard seconds recommended by the Bluetooth standard \cite{}.
- Since some of this code was closed-source, we were not able to determine why this was the case, and on these phones, adjusted the scan time to correspond with the Bluetooth standard.
- This may have led to some issues wherein some of the two frequency trains (Figure~\ref{fig:frequency-trains-bluetooth}) were left unexplored, however, back of the notebook experiments in the lab showed this to not be the case.
- None of the phones used in the primary study had this issue, however, it is noted here as a potential issue of data integrity, and for the reference of potential future readers.
+We also found that some versions of the Android OS had a longer Bluetooth scan time than the \numsecondsscantimebluetoothstandard seconds recommended by the Bluetooth standard \cite{}.
+Since some of this code was closed-source, we were not able to determine why this was the case, and on these phones, adjusted the scan time to correspond with the Bluetooth standard.
+This may have led to some issues wherein some of the two frequency trains (Figure~\ref{fig:frequency-trains-bluetooth}) were left unexplored, however, back of the notebook experiments in the lab showed this to not be the case.
+None of the phones used in the primary study had this issue, however, it is noted here as a potential issue of data integrity, and for the reference of potential future readers.
 
 
 The second primary issue involving data collection integrity was the two stage process of Bluetooth discovery, involving first a discovery step which negotiates a back-off and secondary handshake, and a second, later, paging process in which the device name is exchanged as well as other information about the device \cite{}.
- Android's Bluetooth API abstracts away the details involved in managing this two step process, but in doing so it adds additional ambiguity into the data collection: it becomes unclear whether a discovered Bluetooth device had a name which could have been discovered if more time was spent scanning, or whether it had no name to begin with.
- Future work would look more into the implementation of name discovery in the Android OS and attempt to build a more robust application for skimmer detection.
+Android's Bluetooth API abstracts away the details involved in managing this two step process, but in doing so it adds additional ambiguity into the data collection: it becomes unclear whether a discovered Bluetooth device had a name which could have been discovered if more time was spent scanning, or whether it had no name to begin with.
+Future work would look more into the implementation of name discovery in the Android OS and attempt to build a more robust application for skimmer detection.
 
 
 Bluetana, in a way, serves as a demonstration that it is possible to detect skimmers via Bluetooth.
- More work would be needed to translate it into a commercial application, and this is left for those who have an interest in such matters.
+More work would be needed to translate it into a commercial application, and this is left for those who have an interest in such matters.
 
 
-        \subsection{Kiosk Implementation}
+\subsection{Kiosk Implementation}
 
 The Kiosk implementation itself involved modifying the \texttt{...} file in the applications APK, and then designing the messy startup workflow depicted in Figure~\ref{fig:kiosk-implementation}.
- It is included here for those interested in the security aspects of this operating system manipulation, and it may provide some insight into the development of malicious APKs for the Android operating system.
- In fact, many of the implementation details of Bluetana involved in the development of Bluetana involved circumventing permission systems and safeguards within the Android operating system.
- Details are not provided here due to the existence of online tutorials for these tasks and numberous works on android permissions circumvention \cite{}.
+It is included here for those interested in the security aspects of this operating system manipulation, and it may provide some insight into the development of malicious APKs for the Android operating system.
+In fact, many of the implementation details of Bluetana involved in the development of Bluetana involved circumventing permission systems and safeguards within the Android operating system.
+Details are not provided here due to the existence of online tutorials for these tasks and numberous works on android permissions circumvention \cite{}.
 
 
-        \subsection{Lessons Learned in Remote Updates}
+\subsection{Lessons Learned in Remote Updates}
 
 The first thing any developer of a widely distributed application should implement is a remote update mechanism; this is chiefly important in research, wherein projects may be continually plagued by moving goalposts, and a need for additional data.
- An example of the Bluetana remote update screen is included in Figure~\ref{fig:remote-update-prompt}.
- This allowed quick deployment to both alpha and beta users, but did require some manuvering.
- Under no circumstance did we desire the application to break, exit, and then remain in this broken state, incapable of updating.
- Thus, a fallback procedure was implemented, and the callback to always check the application for updates was added into the boot sequence of the code, as is depicted in Figure~\ref{fig:fallback-update-code}.
- 
+An example of the Bluetana remote update screen is included in Figure~\ref{fig:remote-update-prompt}.
+This allowed quick deployment to both alpha and beta users, but did require some manuvering.
+Under no circumstance did we desire the application to break, exit, and then remain in this broken state, incapable of updating.
+Thus, a fallback procedure was implemented, and the callback to always check the application for updates was added into the boot sequence of the code, as is depicted in Figure~\ref{fig:fallback-update-code}.
+
 
 Additional complexities were created by the Android APK signing procedure.
- Initial versions of the app were signed by the Android debug key that is generated with an install of Android Studio.
- Later on, as the project expanded and new hardware was acquired for development, this key needed to sign another key which was then used for distribution amongst development machines.
- Simply pushing a new application to the phone from a new laptop would result in the download failing with no explanation to the user as to why.
- If the download failed in this manner, then the app would prompt the user to upgrade and would fail to do so at every startup.
- Thus, it was crucial to establish trust with a new key.
- This also indicates a potential source of vulnerability in the Android application environment, similar to those vulnerabilities with the Certificate Authorities behind HTTPS, and has been a subject of other research \cite{}.
+Initial versions of the app were signed by the Android debug key that is generated with an install of Android Studio.
+Later on, as the project expanded and new hardware was acquired for development, this key needed to sign another key which was then used for distribution amongst development machines.
+Simply pushing a new application to the phone from a new laptop would result in the download failing with no explanation to the user as to why.
+If the download failed in this manner, then the app would prompt the user to upgrade and would fail to do so at every startup.
+Thus, it was crucial to establish trust with a new key.
+This also indicates a potential source of vulnerability in the Android application environment, similar to those vulnerabilities with the Certificate Authorities behind HTTPS, and has been a subject of other research \cite{}.
 
 
-        \subsection{Data Visualization and Analysis Design}
+\subsection{Data Visualization and Analysis Design}
 
 Once the data was collected by Bluetana, it was stored in a PSQL database, and \numfilesfordataanalysis seperate scripts were used for a combination of exploratory data analysis and the statistics which were finally used within \cite{}.
- In the end, the website as well as notification system noted above were created, and several different plots and data analysis methods were attempted in order to explicate features of potential skimmers.
- These included dendrograms based upon device name edit distance clustering (Figure~\ref{fig:devname-dendrogram}), and inaccurate CDFs which looked at the overall distribution of Bluetooth device characteristics without taking into account abnormalities in the dataset or how the data was collected (Figure~\ref{fig:example-bad-cdf}).
- As we refined our understanding of the features that actually classified skimming devices, we were able to more accurately hone in on the deductive mechanism for skimmer detection presented in Figure~\ref{fig:skimmer-detect-flowchart}, and begin to produce more relevant plots which looked specifically at gas station visits and relevant features, such as Figure~\ref{fig:uncat-hist}.
+In the end, the website as well as notification system noted above were created, and several different plots and data analysis methods were attempted in order to explicate features of potential skimmers.
+These included dendrograms based upon device name edit distance clustering (Figure~\ref{fig:devname-dendrogram}), and inaccurate CDFs which looked at the overall distribution of Bluetooth device characteristics without taking into account abnormalities in the dataset or how the data was collected (Figure~\ref{fig:example-bad-cdf}).
+As we refined our understanding of the features that actually classified skimming devices, we were able to more accurately hone in on the deductive mechanism for skimmer detection presented in Figure~\ref{fig:skimmer-detect-flowchart}, and begin to produce more relevant plots which looked specifically at gas station visits and relevant features, such as Figure~\ref{fig:uncat-hist}.
 
 
 The data was stored in a PSQL database, and important lesson were learned about reducing thec complexity of joins, removing null records, and creating indices early on throughout the entire process.
- Ultimately, the scripts used to generate the plots in the paper became one, rather complicated connection of several interelated components casting the data through different filters.
- Reflecting on this process, research often results in messy, improvisational-jazz style code.
- The entropy required by exploration and not neccessarily perfection should be embraced, but if one can document their thoughts along the way, these scripts can be studied, corrected, and modified more easily.
- A sample of some of the code is provided in Figure~\ref{fig:messy-improv-code}.
+Ultimately, the scripts used to generate the plots in the paper became one, rather complicated connection of several interelated components casting the data through different filters.
+Reflecting on this process, research often results in messy, improvisational-jazz style code.
+The entropy required by exploration and not neccessarily perfection should be embraced, but if one can document their thoughts along the way, these scripts can be studied, corrected, and modified more easily.
+A sample of some of the code is provided in Figure~\ref{fig:messy-improv-code}.
 
 
 \section{Skimmer Flagging Workflow}\label{sec:skimmer-flagging-workflow}
 
 Detail the flow chart, maybe use the section of the paper that goes over this?
 
-    \section{Potential Drawbacks and Difficulties with Future Skimmer Detection}
+\section{Potential Drawbacks and Difficulties with Future Skimmer Detection}
 
 There are a few potential drawbacks to the approach of using Android to develop a skimmer detection application.
- The first is the inability to expand detection to wireless mechanisms beyond Bluetooth and Wifi without rooting the phone, as the API provides no direct control of the phone's antennaes.
- Another drawback is the restrictions and ambiguities introduced by the Android API, such as the paging and name request portions of the bluetooth protocol, as outlined in Section~\ref{sec:name-request-sect}, though this may be circumventable via native code modules.
- 
+The first is the inability to expand detection to wireless mechanisms beyond Bluetooth and Wifi without rooting the phone, as the API provides no direct control of the phone's antennaes.
+Another drawback is the restrictions and ambiguities introduced by the Android API, such as the paging and name request portions of the bluetooth protocol, as outlined in Section~\ref{sec:name-request-sect}, though this may be circumventable via native code modules.
+
 
 Additional difficulties arise from the use of Bluetooth itself, as not all skimmers are using Bluetooth for data retrieval, and some may develop mechanisms for cleverly hiding their Bluetooth signal, such as non-discoverable mode \cite{}.
- Future internal skimmer detection mechanisms may need to rely on features intrinsic to the pump itself, such as current draw on the ribbon wire connecting the magnetic stripe reader to the Point-of-Sale terminal, or power glitching attacks.
- Persistent solutions which monitor the wireless spectrum for sensitive data in transit may also be neccessary to establish.
- In the end, the primary difficulties with Skimmer detection are that criminals will continue to adapt, or may move to different mechanisms of fraud altogether.
- 
+Future internal skimmer detection mechanisms may need to rely on features intrinsic to the pump itself, such as current draw on the ribbon wire connecting the magnetic stripe reader to the Point-of-Sale terminal, or power glitching attacks.
+Persistent solutions which monitor the wireless spectrum for sensitive data in transit may also be neccessary to establish.
+In the end, the primary difficulties with Skimmer detection are that criminals will continue to adapt, or may move to different mechanisms of fraud altogether.
 
-        \subsection{Correct Classification}
+
+\subsection{Correct Classification}
 
 There are also difficulties, even with the Bluetooth-based approach, in the correct classification of skimmers as skimmers: during the study of \cite{}, there were some cases wherein a skimmer was not classified as a skimmer until several months after the fact.
- It is most likely the case that there are still skimmers in the dataset of devices we have recovered which are unrecovered.
- The problem, however, is not one of adding additional parameters: Bluetooth as a standard only has so many, it may also be a problem of data analysis.
- Complex multifactor systems such as this need more accessible, robust ways of measuring weighted distance between factors, and determining where outliers are without requiring an additional year of research on top of the year of research required to collect the data in the first place.
- In this work, we attempted and were successful at finding many skimmers, proving that Bluetooth is an effective mechanism, but were unsuccessful at solving the much more complex problem of multifactor exploratory data analysis.
- A general approach to this problem involving the collection of descriptive statistics for all features of the data, and then doing a dynamic search for outliers based upon different weightings of the features has no doubt been adopted already in other places.
- This was a major drawback of Bluetana's approach: it was non-rigorous in its total analysis (as the majority of research projects are), and thus, in many ways ``got lucky" by relying on the heuristic mechanisms and inferences of the data's human operators.
+It is most likely the case that there are still skimmers in the dataset of devices we have recovered which are unrecovered.
+The problem, however, is not one of adding additional parameters: Bluetooth as a standard only has so many, it may also be a problem of data analysis.
+Complex multifactor systems such as this need more accessible, robust ways of measuring weighted distance between factors, and determining where outliers are without requiring an additional year of research on top of the year of research required to collect the data in the first place.
+In this work, we attempted and were successful at finding many skimmers, proving that Bluetooth is an effective mechanism, but were unsuccessful at solving the much more complex problem of multifactor exploratory data analysis.
+A general approach to this problem involving the collection of descriptive statistics for all features of the data, and then doing a dynamic search for outliers based upon different weightings of the features has no doubt been adopted already in other places.
+This was a major drawback of Bluetana's approach: it was non-rigorous in its total analysis (as the majority of research projects are), and thus, in many ways ``got lucky" by relying on the heuristic mechanisms and inferences of the data's human operators.
 
 
-        \subsection{Information Overload}
+\subsection{Information Overload}
 
 Fundamentally, one issue of skimmer detection is information overload.
- Skimmers are impactful but rare in comparison to the total number of gas stations and data points, and it therefore becomes difficult to explore the data without it being a waste of time.
- The notification system helped to isolate some key instances of devices for further analysis, but more sophisticated systems of information isolation will be needed in order to fulfill the needs of future skimmer detection applications as well as other applications, such as those for program analysis, which may be searching for rare occurences within a program which have incredibly high impact.
+Skimmers are impactful but rare in comparison to the total number of gas stations and data points, and it therefore becomes difficult to explore the data without it being a waste of time.
+The notification system helped to isolate some key instances of devices for further analysis, but more sophisticated systems of information isolation will be needed in order to fulfill the needs of future skimmer detection applications as well as other applications, such as those for program analysis, which may be searching for rare occurences within a program which have incredibly high impact.
 
 
-    \section{Open Problems}
+\section{Open Problems}
 
 Beyond the issue of skimming, the large open problem, introduced by the last section, is the creation of systems for efficient, human-usable, and accurate multifactor exploratory data analysis.
- A generalized system or programming language which provides the user a toolkit for doing these tasks would lead to a more robust basis for the performance of research in complex systems, and allow for the development of applications which work within these systems to solve problems that rely on fine-grained classification of individuals within a population.
- Training machine learning models is another approach, but these models are not easily adapted to new domains without a significant amount of training input.
- 
+A generalized system or programming language which provides the user a toolkit for doing these tasks would lead to a more robust basis for the performance of research in complex systems, and allow for the development of applications which work within these systems to solve problems that rely on fine-grained classification of individuals within a population.
+Training machine learning models is another approach, but these models are not easily adapted to new domains without a significant amount of training input.
+
 
 The tantamount issue is skimming itself: the development of Bluetana did not solve the problem of skimming.
- It provided an avenue of detection which will be circumvented at some point in the future.
- For now, Bluetooth remains effective in the detection of skimming devices, however, as time progesses, it will be neccessary to develop mechanisms for the detection of internal skimmers with no noticable wireless signal other than at the time of data retrieval.
- For now, progress could be made in the expansion of the methods used by Bluetana into low-cost, custom-built devices for skimmer detection.
- These devices could have no more cost than a skimmer itself, and would be able to take advantage of features not offered by Android, such as SDP lookup without connection.
- More intelligent inference of gas pump location for signal strength localization could also help to identify skimmers within the pump.
- Finally, persistent, low-failure, and low-cost mechanisms for skimmer detection and prevention are the most promising area of future work.
+It provided an avenue of detection which will be circumvented at some point in the future.
+For now, Bluetooth remains effective in the detection of skimming devices, however, as time progesses, it will be neccessary to develop mechanisms for the detection of internal skimmers with no noticable wireless signal other than at the time of data retrieval.
+For now, progress could be made in the expansion of the methods used by Bluetana into low-cost, custom-built devices for skimmer detection.
+These devices could have no more cost than a skimmer itself, and would be able to take advantage of features not offered by Android, such as SDP lookup without connection.
+More intelligent inference of gas pump location for signal strength localization could also help to identify skimmers within the pump.
+Finally, persistent, low-failure, and low-cost mechanisms for skimmer detection and prevention are the most promising area of future work.
 
 
-    \section{Summary}
+\section{Summary}
 
 There were several unmentioned implementation details which were critical to Bluetana's success, and indicative of potential future work, which were not present in the original paper.
- These included some of the key limitations involved with the application's design.
- These drawbacks were tempered by a few of the features which made the application deployable to a reasonable number investigators in a short period of time.
- Also discussed were many features of the Android SDK API, which may be useful errata for anyone attempting to develop a crowdsourced application in the future.
- Finally, this section detailed some of the back end mechanisms and challenges involved in supporting the Bluetana infrastructure, such as the use of Google Drive as a secure API end-point and the complexity of the data analysis task.
+These included some of the key limitations involved with the application's design.
+These drawbacks were tempered by a few of the features which made the application deployable to a reasonable number investigators in a short period of time.
+Also discussed were many features of the Android SDK API, which may be useful errata for anyone attempting to develop a crowdsourced application in the future.
+Finally, this section detailed some of the back end mechanisms and challenges involved in supporting the Bluetana infrastructure, such as the use of Google Drive as a secure API end-point and the complexity of the data analysis task.
 
 
-    \section{Acknowledgements}
+\section{Acknowledgements}
 

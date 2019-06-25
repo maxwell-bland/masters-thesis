@@ -327,17 +327,39 @@ For instance, the skimmer may have been discovered before AZDWM was called.
 
 \subsection{Phrase-based Analysis}
 
-A phrase-based approach was also evaluated. 
+A phrase-based approach was also evaluated.
+This looked for phrases to classify the document rather than keywords. 
+These more complex signifiers allow for the preservation of more semantic content.
 The corpus of phrases is included in Table~\ref{tab:phrase-corpus}.
 To build this table, the documents were randomly sampled and manually analyzed.
-More complex signifiers allowed for the preservation of more semantic content.
+Negative phrasing was used rather than positive phrasing.
+This is because positive phrases are often subsets of negative phrases, e.g. "[no] skimmer found"
 In this case, the percentage discovery rate reported by this technique was~\phrasebasedsuccessrate. 
 This is closer to the the ground truth reported by the AZDWM. However, it still suffers many of the same drawbacks as the keyword based approach.
 
+
 \begin{table}
   \centering
-  \input{tabs/phrase-corpus}
-  \caption{The corpus of phrases used to determine whether a skimmer was found. TODO details} 
+  \begin{tabular}{@{}l@{}}
+    \toprule
+    \texttt{pumpsinspectedforskimmers,externalandinternal;nonefound} \\
+    \texttt{skimmerswithnegativeresults} \\
+    \texttt{noskimmerfund} \\
+    \texttt{checkedthesiteforskimmersanddidnotlocateany} \\
+    \texttt{skimmers;nonefound} \\
+    \texttt{skimmersbutnonewerefound} \\
+    \texttt{checkforskimmers0found} \\
+    \texttt{checkforaskimmingdevicewithnegativeresults} \\
+    \texttt{noskimmerinspectionperformed} \\
+    \texttt{noinspectionforinteriorskimmer} \\
+    \texttt{skimmernonewalkedalone} \\ 
+    ... \\ \bottomrule
+  \end{tabular}
+  \caption{
+    Subset of the corpus of phrases used to determine whether a skimmer was found.
+    The phrases are in lowercase and without spaces to simplify parsing.
+    Misspellings are accurate to the original text produced by OCR.
+  }
   \label{tab:phrase-corpus}
 \end{table}
 
@@ -354,7 +376,7 @@ This makes it difficult to determine whether the phrase corpus is unbiased.
 
 The next method attempted was random sampling. 
 This approximated a skimmer detection success rate of \randomsamplesuccessrate
-($\sigma = $\randomsamplestdev).
+($\sigma = $\randomsamplestddev).
 Manual analysis of the sampled documents allowed the removal of hinted reports.
 This approach also won out in the time taken to perform the analysis. 
 Collecting a reasonable corpus for the phrase-based analysis took more time. 
