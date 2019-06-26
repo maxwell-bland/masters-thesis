@@ -84,8 +84,8 @@ Unfortunately, this indicates a single regular expression search for successful 
 Additionally, there are latent ambiguities in the data collected.
 Many documents do not state whether a found skimmer was internal or external.
 They also do not state whether the AZDWM was responsible for the skimmer's detection.
-For instance, a station owner or service tech can discover a skimmer and ``call it in".
-Hereafter, reports triggered by individuals outside the AZDWM  are referred to as ``hinted".
+For instance, a station owner or service tech can discover a skimmer and ``call it in''.
+Hereafter, reports triggered by individuals outside the AZDWM  are referred to as ``hinted''.
 
 \begin{figure}
   \centering
@@ -221,6 +221,7 @@ The OCR was performed using \texttt{ocrmypdf} which operatings using the Tessera
 \cite{smith2007overview}.
 The \texttt{-clean} and \texttt{--rotate-pages} flags were used for document cleaning and orientation detection.
 The final results table is included in Figure~\ref{tab:final-orig-results}.
+Additionally,~\finalnumSkimWord~ reports contained the word ``skimm''.
 
 \begin{table}
   \centering
@@ -299,17 +300,17 @@ Each alternative method and the resulting approximation are detailed in Table
 \ref{tab:success-rates}.
 Details about these methods are included in the next three subsections.
 The AZDWM was also contacted directly for the ground truth data. 
-Their reported ``hit" rate for unhinted inspections was 
+Their reported ``hit'' rate for unhinted inspections was 
 \percentSkimmersToStations.
 
 \begin{table}
   \centering
   \begin{tabular}{lcr}
     \hline
-    Method                & Number of Successful Inspections & (\%) \\ \hline
-    Keyword Analysis      &                                  & \\
-    Phrase-based Analysis &                                  & \\
-    Random Sampling       &                                  & \\ \hline
+    Method                & Inspections Considered & Unsuccessful Inspections \\ \hline
+    Keyword Analysis      & \finalnumSkimWord      & \finalnumNoSkimWord      \\
+    Phrase-based Analysis & \finalnumSkimWord      & \finalnumPhraseFilter    \\
+    Random Sampling       & \numDocumentsSampled   &                          \\ \hline
   \end{tabular}
   \caption{The various skimmer detection success rates as reported by different methods for document analysis. TODO details}
   \label{tab:success-rates}
@@ -318,9 +319,9 @@ Their reported ``hit" rate for unhinted inspections was
 \subsection{Keyword-based Analysis}
 
 The first attempt at skimmer detection rate estimation was keyword based.
-The intuition was to subtract the reports with the words ``no skimm" from the reports with the word ``skimm". 
+The intuition was to subtract the reports with the words ``no skimm'' from the reports with the word ``skimm''. 
 This number deviates from the ground truth for trivial reasons. 
-For one, the pre-inspection checklist includes the term ``skimm". 
+For one, the pre-inspection checklist includes the term ``skimm''. 
 The reported skimmer detection success rate based upon this metric was \skimmerwordbasedsuccessrate.
 The actual detection rate for unhinted inspections is much lower. 
 Using a keyword search misses semantic details of the content. 
@@ -329,15 +330,16 @@ For instance, the skimmer may have been discovered before AZDWM was called.
 \subsection{Phrase-based Analysis}
 
 A phrase-based approach was also evaluated.
-This looked for phrases to classify the document rather than keywords. 
+This looked for phrases to classify the document rather than keywords.
+Documents with these phrases were subtracted from those with the word ``skimm''.
+\numPhrasesUsed~phrases were used in total.
 These more complex signifiers allow for the preservation of more semantic content.
 The corpus of phrases is included in Table~\ref{tab:phrase-corpus}.
 To build this table, the documents were randomly sampled and manually analyzed.
 Negative phrasing was used rather than positive phrasing.
-This is because positive phrases are often subsets of negative phrases, e.g. "[no] skimmer found"
+This is because positive phrases are often subsets of negative phrases, e.g. ``[no] skimmer found''
 In this case, the percentage discovery rate reported by this technique was~\phrasebasedsuccessrate. 
 This is closer to the the ground truth reported by the AZDWM. However, it still suffers many of the same drawbacks as the keyword based approach.
-
 
 \begin{table}
   \centering
@@ -369,13 +371,14 @@ The phrases captured the individual idiosyncrasies of investigators.
 Each inspector will, for a time, have \emph{their way} of signifying whether they found a skimmer or not.
 However, phrase based analysis remains inaccurate. 
 The are many subtle indicator phrases that an inspection was not random. 
-Some of these, such as ``owner found skimmer," can be captured.
+Some of these, such as ``owner found skimmer,'' can be captured.
 Others are report-specific and cannot be included without manual analysis of every document.
 This makes it difficult to determine whether the phrase corpus is unbiased.
 
 \subsection{Random Sampling}
 
 The next method attempted was random sampling. 
+This was done with a 95\% confidence level and 2\% confidence interval.
 This approximated a skimmer detection success rate of \randomsamplesuccessrate
 ($\sigma = $\randomsamplestddev).
 Manual analysis of the sampled documents allowed the removal of hinted reports.
@@ -496,7 +499,7 @@ A passive Bluetooth scanning application would allow for passive skimmer checkin
 In this chapter, both keyword and phrase-based analysis were inaccurate in semantic classification.
 Random sampling was closer in determining the success rate of skimmer investigations.
 These same techniques were used to understand skimmer construction and investigator behavior.
-Since the documents are rich text by investigators, manual analysis was still needed to answer questions such as "Do inspectors check pumps with security seals?".
+Since the documents are rich text by investigators, manual analysis was still needed to answer questions such as ``Do inspectors check pumps with security seals?''.
 A system for answering these queries would reduce the need for manual analysis.
 Similar tasks are already performed by the content-based filtering of recommendation systems.
 The classic content-based recommender system uses word frequency and a user profile (e.g. demographics) \cite{pazzani1999framework}.
