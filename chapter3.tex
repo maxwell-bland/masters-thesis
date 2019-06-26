@@ -190,6 +190,17 @@ It also allowed for the creation of a leaderboard and other metrics.
 These were integrated into a web interface used in retroactive analysis
 (Figure~\ref{fig:bluetana-website}).
 
+\begin{figure}
+  \centering
+  \includegraphics[width=\linewidth]{pics/bluetana-website.png}
+  \caption{
+    Screenshot of Bluetana's web interface.
+    The site includes a leaderboard as well as query engine for suspicious devices.
+    Notifications of suspicious devices were pushed to team members via email.
+  }
+  \label{fig:bluetana-website}
+\end{figure}
+
 \subsection{Scan Time Reduction}
 
 The application also has settings to reduce the Bluetooth scan time.
@@ -205,70 +216,64 @@ This stage is used for transferring the device name to the scanning device
 \cite{}.
 Due to these complications, inspectors phones were set to the android default scan time at startup.
 
-\subsection{Data Visualization and Analysis Design}
+\subsection{Suspicious Device Flagging}\label{sec:skimmer-flagging-workflow}
 
-Once the data was collected by Bluetana, it was stored in a PSQL database, and \numfilesfordataanalysis seperate scripts were used for a combination of exploratory data analysis and the statistics which were finally used within \cite{}.
-In the end, the website as well as notification system noted above were created, and several different plots and data analysis methods were attempted in order to explicate features of potential skimmers.
-These included dendrograms based upon device name edit distance clustering (Figure~\ref{fig:devname-dendrogram}), and inaccurate CDFs which looked at the overall distribution of Bluetooth device characteristics without taking into account abnormalities in the dataset or how the data was collected (Figure~\ref{fig:example-bad-cdf}).
-As we refined our understanding of the features that actually classified skimming devices, we were able to more accurately hone in on the deductive mechanism for skimmer detection presented in Figure~\ref{fig:skimmer-detect-flowchart}, and begin to produce more relevant plots which looked specifically at gas station visits and relevant features, such as Figure~\ref{fig:uncat-hist}.
+We designed Bluetana's method of highlighting suspicious devices based upon discovered skimmers.
+Initially the hit-list contained information from the internet and existing applications
+\cite{}.
+It then became clear inspectors were not finding Bluetooth Low Energy skimmers. 
+All the discovered skimmers also had an unset Bluetooth device class
+\footnote{A set of bytes used to say what a device is (phone, stereo, etc.).}
+and uncustomized MAC addresses.
+These features alone were effective in finding skimmers
+(Figure~\ref{plot-of-class-and-MAC-filtered}).
+However, we also performed edit-distance clustering on the device names. 
+This revealed known products and common default names. 
+Figure~\ref{fig:flagging-flowchart} presents a flowchart of the current flagging workflow.
 
-The data was stored in a PSQL database, and important lesson were learned about reducing thec complexity of joins, removing null records, and creating indices early on throughout the entire process.
-Ultimately, the scripts used to generate the plots in the paper became one, rather complicated connection of several interelated components casting the data through different filters.
-Reflecting on this process, research often results in messy, improvisational-jazz style code.
-The entropy required by exploration and not neccessarily perfection should be embraced, but if one can document their thoughts along the way, these scripts can be studied, corrected, and modified more easily.
-A sample of some of the code is provided in Figure~\ref{fig:messy-improv-code}.
+\begin{figure}
+  \centering
+  \includegraphics[width=\linewidth]{plots/plot-of-class-and-MAC-filtered.png}
+  \caption{
+    Plot of the distribution of skimmers in the last stage of flagging.
+    After MAC, Device class, and Bluetooth classic filtering few devices remain.
+  }
+  \label{fig:plot-of-class-and-MAC-filtered}
+\end{figure}
 
-\section{Skimmer Flagging Workflow}\label{sec:skimmer-flagging-workflow}
+\begin{figure}
+  \centering
+  \includegraphics[width=\linewidth]{plots/flagging-flowchart.png}
+  \caption{
+    Decision tree for determining how Bluetana highlights a device.
+    Orange and red devices suggest the performance of localization or manual inspection.
+  }
+  \label{fig:flagging-flowchart}
+\end{figure}
 
-Detail the flow chart, maybe use the section of the paper that goes over this?
+\section{Future Work and Open Problems}
 
-\section{Potential Drawbacks and Difficulties with Future Skimmer Detection}
+Bluetana managed to detect 64 skimmers, but the problem is not solved.
+Detection mechanisms could be extended to catch SMS-enabled skimmers. 
+Figure~\ref{fig:bluetooth-or-gsm} demonstrates that these skimmers exist.
+Additionally, persistent monitoring devices could be deployed check radio traffic for payment information.
+It may also be possible to detect the power draw from internal skimmers.
+Criminals may also find ways of adapting their Bluetooth signature.
+In this case, more sophisticated localization mechanisms may be needed.
 
-There are a few potential drawbacks to the approach of using Android to develop a skimmer detection application.
-The first is the inability to expand detection to wireless mechanisms beyond Bluetooth and Wifi without rooting the phone, as the API provides no direct control of the phone's antennaes.
-Another drawback is the restrictions and ambiguities introduced by the Android API, such as the paging and name request portions of the bluetooth protocol, as outlined in Section~\ref{sec:name-request-sect}, though this may be circumventable via native code modules.
-
-Additional difficulties arise from the use of Bluetooth itself, as not all skimmers are using Bluetooth for data retrieval, and some may develop mechanisms for cleverly hiding their Bluetooth signal, such as non-discoverable mode \cite{}.
-Future internal skimmer detection mechanisms may need to rely on features intrinsic to the pump itself, such as current draw on the ribbon wire connecting the magnetic stripe reader to the Point-of-Sale terminal, or power glitching attacks.
-Persistent solutions which monitor the wireless spectrum for sensitive data in transit may also be neccessary to establish.
-In the end, the primary difficulties with Skimmer detection are that criminals will continue to adapt, or may move to different mechanisms of fraud altogether.
-
-\subsection{Correct Classification}
-
-There are also difficulties, even with the Bluetooth-based approach, in the correct classification of skimmers as skimmers: during the study of \cite{}, there were some cases wherein a skimmer was not classified as a skimmer until several months after the fact.
-It is most likely the case that there are still skimmers in the dataset of devices we have recovered which are unrecovered.
-The problem, however, is not one of adding additional parameters: Bluetooth as a standard only has so many, it may also be a problem of data analysis.
-Complex multifactor systems such as this need more accessible, robust ways of measuring weighted distance between factors, and determining where outliers are without requiring an additional year of research on top of the year of research required to collect the data in the first place.
-In this work, we attempted and were successful at finding many skimmers, proving that Bluetooth is an effective mechanism, but were unsuccessful at solving the much more complex problem of multifactor exploratory data analysis.
-A general approach to this problem involving the collection of descriptive statistics for all features of the data, and then doing a dynamic search for outliers based upon different weightings of the features has no doubt been adopted already in other places.
-This was a major drawback of Bluetana's approach: it was non-rigorous in its total analysis (as the majority of research projects are), and thus, in many ways ``got lucky" by relying on the heuristic mechanisms and inferences of the data's human operators.
-
-\subsection{Information Overload}
-
-Fundamentally, one issue of skimmer detection is information overload.
-Skimmers are impactful but rare in comparison to the total number of gas stations and data points, and it therefore becomes difficult to explore the data without it being a waste of time.
-The notification system helped to isolate some key instances of devices for further analysis, but more sophisticated systems of information isolation will be needed in order to fulfill the needs of future skimmer detection applications as well as other applications, such as those for program analysis, which may be searching for rare occurences within a program which have incredibly high impact.
-
-\section{Open Problems}
-
-Beyond the issue of skimming, the large open problem, introduced by the last section, is the creation of systems for efficient, human-usable, and accurate multifactor exploratory data analysis.
-A generalized system or programming language which provides the user a toolkit for doing these tasks would lead to a more robust basis for the performance of research in complex systems, and allow for the development of applications which work within these systems to solve problems that rely on fine-grained classification of individuals within a population.
-Training machine learning models is another approach, but these models are not easily adapted to new domains without a significant amount of training input.
-
-The tantamount issue is skimming itself: the development of Bluetana did not solve the problem of skimming.
-It provided an avenue of detection which will be circumvented at some point in the future.
-For now, Bluetooth remains effective in the detection of skimming devices, however, as time progesses, it will be neccessary to develop mechanisms for the detection of internal skimmers with no noticable wireless signal other than at the time of data retrieval.
-For now, progress could be made in the expansion of the methods used by Bluetana into low-cost, custom-built devices for skimmer detection.
-These devices could have no more cost than a skimmer itself, and would be able to take advantage of features not offered by Android, such as SDP lookup without connection.
-More intelligent inference of gas pump location for signal strength localization could also help to identify skimmers within the pump.
-Finally, persistent, low-failure, and low-cost mechanisms for skimmer detection and prevention are the most promising area of future work.
+The analysis routines of Bluetana itself also have room for improvement. 
+We relied on inspector's discovery of ground-truth data for our analysis.
+However, there may be skimmers they missed, exhibiting uncommon features. 
+Notably, we did not analyze Bluetooth Low Energy modules in depth.
+Additionally, SDP might be used to detect more well-hidden skimmers.
+This would require developing workarounds for Android or low-cost embedded skimmer detection devices.
 
 \section{Summary}
 
-There were several unmentioned implementation details which were critical to Bluetana's success, and indicative of potential future work, which were not present in the original paper.
-These included some of the key limitations involved with the application's design.
-These drawbacks were tempered by a few of the features which made the application deployable to a reasonable number investigators in a short period of time.
-Also discussed were many features of the Android SDK API, which may be useful errata for anyone attempting to develop a crowdsourced application in the future.
-Finally, this section detailed some of the back end mechanisms and challenges involved in supporting the Bluetana infrastructure, such as the use of Google Drive as a secure API end-point and the complexity of the data analysis task.
+% There were several unmentioned implementation details which were critical to Bluetana's success, and indicative of potential future work, which were not present in the original paper.
+% These included some of the key limitations involved with the application's design.
+% These drawbacks were tempered by a few of the features which made the application deployable to a reasonable number investigators in a short period of time.
+% Also discussed were many features of the Android SDK API, which may be useful errata for anyone attempting to develop a crowdsourced application in the future.
+% Finally, this section detailed some of the back end mechanisms and challenges involved in supporting the Bluetana infrastructure, such as the use of Google Drive as a secure API end-point and the complexity of the data analysis task.
 
 \section{Acknowledgements}
