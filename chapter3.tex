@@ -1,5 +1,9 @@
 \chapter{A Better Mechanism: Bluetana}\label{chap:3}
-\section{Introduction}
+\begin{quote}
+``So, in the interests of survival, they trained themselves to be agreeing machines instead of thinking machines.
+ All their minds had to do was to discover what other people were thinking, and then they thought that, too.'' \\ 
+--- Kurt Vonnegut, \emph{Breakfast of Champions}
+\end{quote}
 In the last chapter, AZDWM documents revealed many skimming devices are Bluetooth enabled.
 This motivated the development of an Android application, Bluetana, for skimmer detection.  
 Bluetana was ultimately deployed to over twenty government investigators. 
@@ -42,7 +46,7 @@ The apps match potential skimmers by MAC, name, or attempting to connect.
 Apps attempting to connect to the device are most concerning.
 This can remove forensic evidence recording the last paired MAC address.
 
-\section{Construction of an Android Application for Skimmer Detection}
+\section{Construction of an Application for Skimmer Detection}
 
 Most of the ``skimmer detection" work is actually back-end data analysis.
 Thus, the front-end design of a skimmer detection application is trivial. 
@@ -182,6 +186,17 @@ A larger number of records helped to prevent false positives.
 Using localization records, Bluetana was able to create heatmaps for each device
 (Figure~\ref{fig:heatmap-localization}).
 Skimmers will have a high signal strength close to a gas pump.
+
+\begin{figure}
+  \centering
+  \includegraphics[width=\linewidth]{pics/heatmap-localization.png}
+  \caption{
+    Screenshot comparing Bluetana's localization data between a skimmer and non-skimmer.
+    Skimmers, unlike other devices, have much higher signal strength near the gas pump.
+    Sensitive data has been redacted.
+  }
+  \label{fig:bluetana-website}
+\end{figure}
 While other devices like car stereos may as well, this is less likely.
 
 Live updates from each phone also allowed notifications to be created.
@@ -223,7 +238,7 @@ Initially the hit-list contained information from the internet and existing appl
 \cite{}.
 It then became clear inspectors were not finding Bluetooth Low Energy skimmers. 
 All the discovered skimmers also had an unset Bluetooth device class
-\footnote{A set of bytes used to say what a device is (phone, stereo, etc.).}
+\footnote{A set of bytes used to indicate what a device is (phone, stereo, etc.).}
 and uncustomized MAC addresses.
 These features alone were effective in finding skimmers
 (Figure~\ref{plot-of-class-and-MAC-filtered}).
