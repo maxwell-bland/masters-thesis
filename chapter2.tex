@@ -310,9 +310,13 @@ Their reported ``hit'' rate for unhinted inspections was
     Method                & Inspections Considered & Unsuccessful Inspections \\ \hline
     Keyword Analysis      & \finalnumSkimWord      & \finalnumNoSkimWord      \\
     Phrase-based Analysis & \finalnumSkimWord      & \finalnumPhraseFilter    \\
-    Random Sampling       & \numDocumentsSampled   &                          \\ \hline
+    Random Sampling       & \numDocumentsSampled   & \finalnumSampled         \\ \hline
   \end{tabular}
-  \caption{The various skimmer detection success rates as reported by different methods for document analysis. TODO details}
+  \caption{
+    The skimmer detection success rates as reported by different methods for document analysis.
+    Both phrase based and keyword based analysis are inaccurate.
+    However, random sampling is accurate to $\pm 2.6\%$ with 99\% confidence.
+  }
   \label{tab:success-rates}
 \end{table}
 
@@ -377,13 +381,14 @@ This makes it difficult to determine whether the phrase corpus is unbiased.
 
 \subsection{Random Sampling}
 
-The next method attempted was random sampling. 
-This was done with a 95\% confidence level and 2\% confidence interval.
-This approximated a skimmer detection success rate of \randomsamplesuccessrate
-($\sigma = $\randomsamplestddev).
+The next method attempted was random sampling of documents containing the word ``skimm''.
+This approximated a skimmer detection success rate of \randomsamplesuccessrate.
+($\pm 2.6\%$ with 99\% confidence).
 Manual analysis of the sampled documents allowed the removal of hinted reports.
+Police, gas station owners, and credit companies hinted five of the seven reports.
 This approach also won out in the time taken to perform the analysis. 
-Collecting a reasonable corpus for the phrase-based analysis took more time. 
+Classifying this small number of reports, however, took only two hours.
+Finding a ``reasonable'' phrase corpus took more time.
 These approaches show different prediction convergence behavior as time progresses.
 Random sampling zeroes in on a mean estimate, while phrase-based analysis moves step-wise. 
 The latter of the two is only rigorous under restricted circumstances.
@@ -391,11 +396,11 @@ Figures \ref{fig:phrase-based-accuracy-num-terms} and \ref{fig:random-sampling-a
 
 \begin{figure}
   \centering
-  \includegraphics[width=\linewidth]{plots/phrase-based-accuracy-num-terms}
+  \includegraphics[width=4.25in]{plots/phrase-based-accuracy-num-terms.pdf}
   \caption{
-    The reported number of skimmer detection success rate as reported by the phrase-based model
-    as the number of terms increased.
-    TODO details
+    Number of unsuccessful inspections approximated by the phrase-based model per phrase added.
+    The approximation has a large spike upon addition of the phrase ``no skimmer''.
+    Otherwise, individual phrases have little impact on the reported success rate.
   }
   \label{fig:phrase-based-accuracy-num-terms}
 \end{figure}
@@ -417,47 +422,47 @@ However, they can also result in severe statistical bias.
 Manual inspection \emph{can} contain bias as well.
 For some studies, such as this one, the accuracy of random sampling suggests bias is not an issue.
 
-\subsection{Inspection Report Generation Bias}
+\section{Describing Inspections and Skimmers}\label{sec:describing-inspections-skimmers}
 
-This study was also able to determine how many skimmer discoveries were hinted.
-\randsamplehinted successful skimmer detections were hinted ($\sigma =$ \randsamplehintedstddev).
-With this statistic understood, phrase-based analysis can be made more accurate.
+By looking at the sample of documents, we get a broader understanding of skimming.
+First, complaints and hints from customers are somewhat helpful when detecting skimmers.
+Second, inspectors often do not perform thorough skimmer inspections.
+Additionally, internal, Bluetooth enabled skimmers are common.
+Finally, manual skimmer inspections are slow: often taking 30 minutes or more.
 
-$$ 1 - (Hint~Rate)~\times~Phrase~Rate = \phraseMultipliedPercent$$
+\subsection{Inspection Report Generation Bias}\label{sec:inspector-behavior}
 
-It is also possible some inspectors do not perform a thorough inspection of the pumps. 
-To evaluate this, the skimmer discovery rate for 10 of the inspectors was measured.
-The discovery rate for each inspector was approximately the same
-(Figure~\ref{fig:ten-inspector-disc-rate}).
+Random sampling was also able to determine the effectiveness of hints.
+I considered a hint to be anything that suggests to the inspector that there is a skimmer.
+This includes owners calling in AZDWM to report a found skimmer.
+It also includes complaints filed about skimming which trigger an inspection.
+Finally, AZDWM also recieve hints from credit companies and local PD.
+\randsamplehinted~of the inspections in the \numDocumentsSampled sampled documents were hinted.
+Five of these hints were correct, making the efficacy of hints 29.4\% for this sample.
+
+Additionally, some documents show inspectors are not following best practices.
+This includes checking the pumps even if there are security seals in place
+(Figure~\ref{fig:no-check-security-seals}).
+Criminals can buy pump security seals online \cite{}.
+Therefore inspectors should check pumps even if seals are in place.
 
 \begin{figure}
   \centering
-  \includegraphics[width=\linewidth]{plots/ten-inspector-disc-rate}
+  \includegraphics[width=\linewidth]{pics/no-check-security-seals}
   \caption{
-    Skimmer detection rates for 10 inspectors. TODO details
+    Instance of an inspector not checking for skimmers because of security seals.
+    In other cases, inspectors did not check locked or alarmed pumps.
   }
-  \label{fig:ten-inspector-disc-rate}
+  \label{fig:no-check-security-seals}
 \end{figure}
 
-\section{Describing Inspections and Skimmers}\label{sec:describing-inspections-skimmers}
+\subsection{Inspection Time}
 
-With an understanding of the documents, I can address questions critical to skimming.
-The following section details inspection methodology and skimmer construction.
-First, inspectors often do not perform thorough skimmer inspections.
-Second, internal skimmers are far more often than external skimmers.
-Additionally, criminals construct internal skimmers more often with Bluetooth than other methods.
-Finally, manual skimmer inspections are slow: often taking 30 minutes or more.
-
-\subsection{Inspections and Inspector Behavior}\label{sec:inspector-behavior}
-
-Random sampling of skimmer reports can reveal the behavior of investigators. 
-Of immediate prevalence is the improper investigation and inspection of pumps. 
-[TODO Demonstrate examples of this, veriphone, seals, locks.
-  Talk about criminal circumvention.]
-This tells us that a method for detection that does not require opening the pumps could be useful.
-Secondary to this is that inspections can take a long time. 
-Figure~\ref{fig:insp-time-cdf} presents a CDF of the inspection times for \numInspectionTimesConfidence randomly sampled inspections.
-If there were a way to speed up inspection times, it may also help improve skimmer detection.
+Finally, skimmer inspections take a long time.
+I sampled \numSkiRandomSampled SKI-origin reports and recorded the time taken in the inspection. 
+Figure~\ref{fig:insp-time-cdf} presents a CDF of the inspection times.
+The average inspection time was \avgInspectionTimeSample ($\sigma = $\stddevInspectionTime.
+If there were a way to speed up inspection times, it could improve skimmer detection.
 
 \begin{figure}
   \centering
@@ -472,18 +477,16 @@ If there were a way to speed up inspection times, it may also help improve skimm
 
 Inspection documents can also provide hints on skimmer construction.
 As was seen in Section~\ref{sec:understanding-the-documents}, some documents included potential MAC addresses and names. 
-Additionally, \numSkimmerInspBluetooth of \numSuccessfulSkimmerInsp, of skimmers found were Bluetooth capable.
+Additionally, \numSkimmerInspBluetooth of \numSuccessfulSkimmerInsp skimmers found above were Bluetooth capable.
 From this, we can isolate Bluetooth as a potential route of detection. 
-We can also analyze images of skimmers to determine that in a random sample of \numSampledInternalExternalSkimmerReports reports, only \numExternalSkimmersSampled were external
-($\sigma =$ \stdDevNumExternalSkims).
-Thus, a robust method of internal skimmer detection would have high impact.
+Additionally, all the skimmers discovered within the sampled reports were internal.
+Thus, a robust method of internal skimmer detection may have high impact.
 
 \section{The Design of Bluetana}\label{sec:bluetana-motivation}
 
 This chapter's research motivates development of a Bluetooth application for skimmer detection.
 In the next chapter, I will detail the design of such an application, named Bluetana.
-We know from the reports internal skimmers are more common than external skimmers.
-We also know that many are Bluetooth enabled.
+We know from the reports internal, Bluetooth-enabled skimmers are common.
 Because of this, Bluetooth scanning has the potential to discover these skimmers.
 Additionally, we know that inspections currently take a significant amount of time.
 Not only do inspections take time, they may not be comprehensive.

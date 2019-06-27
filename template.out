@@ -23,10 +23,10 @@
 \BOOKMARK [2][-]{subsection.2.3.1}{Keyword-based Analysis}{section.2.3}% 23
 \BOOKMARK [2][-]{subsection.2.3.2}{Phrase-based Analysis}{section.2.3}% 24
 \BOOKMARK [2][-]{subsection.2.3.3}{Random Sampling}{section.2.3}% 25
-\BOOKMARK [2][-]{subsection.2.3.4}{Inspection Report Generation Bias}{section.2.3}% 26
-\BOOKMARK [1][-]{section.2.4}{Describing Inspections and Skimmers}{chapter.2}% 27
-\BOOKMARK [2][-]{subsection.2.4.1}{Inspections and Inspector Behavior}{section.2.4}% 28
-\BOOKMARK [2][-]{subsection.2.4.2}{Skimmer Construction}{section.2.4}% 29
+\BOOKMARK [1][-]{section.2.4}{Describing Inspections and Skimmers}{chapter.2}% 26
+\BOOKMARK [2][-]{subsection.2.4.1}{Inspection Report Generation Bias}{section.2.4}% 27
+\BOOKMARK [2][-]{subsection.2.4.2}{Inspection Time}{section.2.4}% 28
+\BOOKMARK [2][-]{subsection.2.4.3}{Skimmer Construction}{section.2.4}% 29
 \BOOKMARK [1][-]{section.2.5}{The Design of Bluetana}{chapter.2}% 30
 \BOOKMARK [1][-]{section.2.6}{Related and Future Work}{chapter.2}% 31
 \BOOKMARK [1][-]{section.2.7}{Summary}{chapter.2}% 32
