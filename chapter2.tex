@@ -407,7 +407,7 @@ Figures \ref{fig:phrase-based-accuracy-num-terms} and \ref{fig:random-sampling-a
 
 \begin{figure}
   \centering
-  \includegraphics[width=\linewidth]{plots/random-sampling-accuracy-num-reviewed}
+  \includegraphics[width=4.25in]{plots/random-sampling-accuracy-num-reviewed}
   \caption{
     The convergence of the estimated skimmer detection probability from random sampling.
     The filled portion of the plot depicts a 95\% confidence interval. 
@@ -441,7 +441,7 @@ Five of these hints were correct, making the efficacy of hints 29.4\% for this s
 Additionally, some documents show inspectors are not following best practices.
 This includes checking the pumps even if there are security seals in place
 (Figure~\ref{fig:no-check-security-seals}).
-Criminals can buy pump security seals online \cite{gas_pump_seals}.
+Criminals can buy some pump security seals online \cite{gas_pump_seals}.
 Therefore inspectors should check pumps even if seals are in place.
 
 \begin{figure}
@@ -459,14 +459,16 @@ Therefore inspectors should check pumps even if seals are in place.
 Finally, skimmer inspections take a long time.
 I sampled \numSkiRandomSampled SKI-origin reports and recorded the time taken in the inspection. 
 Figure~\ref{fig:insp-time-cdf} presents a CDF of the inspection times.
-The average inspection time was \avgInspectionTimeSample ($\sigma = $\stddevInspectionTime.
+The average inspection time was \avgInspectionTimeSample~($\sigma = $\stddevInspectionTime).
 If there were a way to speed up inspection times, it could improve skimmer detection.
 
 \begin{figure}
   \centering
-  \includegraphics[width=\linewidth]{plots/insp-time-cdf}
+  \includegraphics[width=4.25in]{plots/insp-time-cdf.pdf}
   \caption{
-    Inspection times for \numInspectionTimesConfidence randomly sampled inspections. TODO details
+        Inspection times for randomly sampled skimmer inspections.
+    Some inspections are quick: for instance, the station may not have card readers.
+    Typically inspections that find skimmers take more than an hour.
   }
   \label{fig:insp-time-cdf}
 \end{figure}
@@ -475,7 +477,9 @@ If there were a way to speed up inspection times, it could improve skimmer detec
 
 Inspection documents can also provide hints on skimmer construction.
 As was seen in Section~\ref{sec:understanding-the-documents}, some documents included potential MAC addresses and names. 
-Additionally, \numSkimmerInspBluetooth of \numSuccessfulSkimmerInsp skimmers found above were Bluetooth capable.
+Unfortunately, most inspectors do not investigate whether a device is Bluetooth enabled.
+However, some are known to be and this is mentioned in the report
+\cite{43675-284675}.
 From this, we can isolate Bluetooth as a potential route of detection. 
 Additionally, all the skimmers discovered within the sampled reports were internal.
 Thus, a robust method of internal skimmer detection may have high impact.
