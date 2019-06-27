@@ -398,9 +398,9 @@ Figures \ref{fig:phrase-based-accuracy-num-terms} and \ref{fig:random-sampling-a
   \centering
   \includegraphics[width=4.25in]{plots/phrase-based-accuracy-num-terms.pdf}
   \caption{
-    Number of unsuccessful inspections approximated by the phrase-based model per phrase added.
+    Probability of skimmer detection approximated by the phrase-based model per phrase added.
     The approximation has a large spike upon addition of the phrase ``no skimmer''.
-    Otherwise, individual phrases have little impact on the reported success rate.
+    Otherwise, phrases added have little impact on the reported success rate.
   }
   \label{fig:phrase-based-accuracy-num-terms}
 \end{figure}
@@ -409,9 +409,8 @@ Figures \ref{fig:phrase-based-accuracy-num-terms} and \ref{fig:random-sampling-a
   \centering
   \includegraphics[width=\linewidth]{plots/random-sampling-accuracy-num-reviewed}
   \caption{
-    The convergence of the success rate inferred by random sampling as the number of 
-    documents sampled increases.
-    TODO details
+    The convergence of the estimated skimmer detection probability from random sampling.
+    The filled portion of the plot depicts a 95\% confidence interval. 
   }
   \label{fig:random-sampling-accuracy-num-reviewed}
 \end{figure}
@@ -426,7 +425,6 @@ For some studies, such as this one, the accuracy of random sampling suggests bia
 
 By looking at the sample of documents, we get a broader understanding of skimming.
 First, complaints and hints from customers are somewhat helpful when detecting skimmers.
-Second, inspectors often do not perform thorough skimmer inspections.
 Additionally, internal, Bluetooth enabled skimmers are common.
 Finally, manual skimmer inspections are slow: often taking 30 minutes or more.
 
@@ -443,7 +441,7 @@ Five of these hints were correct, making the efficacy of hints 29.4\% for this s
 Additionally, some documents show inspectors are not following best practices.
 This includes checking the pumps even if there are security seals in place
 (Figure~\ref{fig:no-check-security-seals}).
-Criminals can buy pump security seals online \cite{}.
+Criminals can buy pump security seals online \cite{gas_pump_seals}.
 Therefore inspectors should check pumps even if seals are in place.
 
 \begin{figure}
