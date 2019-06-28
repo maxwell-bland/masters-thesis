@@ -42,6 +42,12 @@ Table~\ref{tab:overview-azdwm-stats} provides overview statistics on the documen
 \begin{table}
   \centering
   \noindent
+  \caption{
+    Overview statistics on the documents from AZDWM gas station inspection reports.
+    Only a portion of the documents are parsable.
+    Some non-skimmer inspections include checks for skimmers.
+  }
+  \label{tab:overview-azdwm-stats}
   \begin{tabular}{l|c}
     \toprule
     Total Number of PDFs                                         & \upperAZDWMpdfs  \\
@@ -55,12 +61,6 @@ Table~\ref{tab:overview-azdwm-stats} provides overview statistics on the documen
     Success Rate Reported by the AZDWM (Unhinted)                     & 1.5\%  \\
     \bottomrule
   \end{tabular}
-  \caption{
-    Overview statistics on the documents from AZDWM gas station inspection reports.
-    Only a portion of the documents are parsable.
-    Some non-skimmer inspections include checks for skimmers.
-  }
-  \label{tab:overview-azdwm-stats}
 \end{table}
 
 A primary goal of this survey is to understand skimmer inspections.
@@ -168,6 +168,11 @@ This is because some documents contained multiple inspection reports concatinate
 
 \begin{table}
   \centering
+  \caption{
+    Summary of skimmer inspection form data origins and their occurrence rate.
+    Reports are submitted most often for scheduled and skimmer-specific inspections.
+  }
+  \label{tab:explanations-of-origins}
   \begin{tabular}{@{}lcr@{}}
     \toprule
     Origin Header & Meaning                        & Number of Documents \\ \midrule
@@ -180,11 +185,6 @@ This is because some documents contained multiple inspection reports concatinate
     COL           & Licensing Fee Collection       & \numCOLOrig \\
     SPC           & Fuel Quality Inspection        & \numSPCOrig \\ \bottomrule
   \end{tabular}
-  \caption{
-    Summary of skimmer inspection form data origins and their occurrence rate.
-    Reports are submitted most often for scheduled and skimmer-specific inspections.
-  }
-  \label{tab:explanations-of-origins}
 \end{table}
 
 
@@ -225,6 +225,12 @@ Additionally,~\finalnumSkimWord~ reports contained the word ``skimm''.
 
 \begin{table}
   \centering
+  \caption{
+    OCR corrected inspection form origins.
+    The ratios of each report type are approximately the same as before OCR.
+    However, vapor recovery and complaint based inspections jumped in number.
+  }
+  \label{tab:final-orig-results}
   \begin{tabular}{@{}lr@{}}
     \toprule
     Origin Header & Number of Documents \\ \midrule
@@ -237,12 +243,6 @@ Additionally,~\finalnumSkimWord~ reports contained the word ``skimm''.
     COL           & \finalnumCOLOrig \\
     SPC           & \finalnumSPCOrig \\ \bottomrule
   \end{tabular}
-  \caption{
-    OCR corrected inspection form origins.
-    The ratios of each report type are approximately the same as before OCR.
-    However, vapor recovery and complaint based inspections jumped in number.
-  }
-  \label{tab:final-orig-results}
 \end{table}
 
 \emph{All} the~\upperAZDWMpdfs~PDFs underwent OCR.
@@ -305,6 +305,12 @@ Their reported ``hit'' rate for unhinted inspections was
 
 \begin{table}
   \centering
+  \caption{
+    The skimmer detection success rates as reported by different methods for document analysis.
+    Both phrase based and keyword based analysis are inaccurate.
+    However, random sampling is accurate to $\pm 2.6\%$ with 99\% confidence.
+  }
+  \label{tab:success-rates}
   \begin{tabular}{lcr}
     \hline
     Method                & Inspections Considered & Unsuccessful Inspections \\ \hline
@@ -312,12 +318,6 @@ Their reported ``hit'' rate for unhinted inspections was
     Phrase-based Analysis & \finalnumSkimWord      & \finalnumPhraseFilter    \\
     Random Sampling       & \numDocumentsSampled   & \finalnumSampled         \\ \hline
   \end{tabular}
-  \caption{
-    The skimmer detection success rates as reported by different methods for document analysis.
-    Both phrase based and keyword based analysis are inaccurate.
-    However, random sampling is accurate to $\pm 2.6\%$ with 99\% confidence.
-  }
-  \label{tab:success-rates}
 \end{table}
 
 \subsection{Keyword-based Analysis}
@@ -347,6 +347,12 @@ This is closer to the the ground truth reported by the AZDWM. However, it still 
 
 \begin{table}
   \centering
+  \caption{
+    Subset of the corpus of phrases used to determine whether a skimmer was found.
+    The phrases are in lowercase and without spaces to simplify parsing.
+    Misspellings are accurate to the original text produced by OCR.
+  }
+  \label{tab:phrase-corpus}
   \begin{tabular}{@{}l@{}}
     \toprule
     \texttt{pumpsinspectedforskimmers,externalandinternal;nonefound} \\
@@ -362,12 +368,6 @@ This is closer to the the ground truth reported by the AZDWM. However, it still 
     \texttt{skimmernonewalkedalone} \\ 
     ... \\ \bottomrule
   \end{tabular}
-  \caption{
-    Subset of the corpus of phrases used to determine whether a skimmer was found.
-    The phrases are in lowercase and without spaces to simplify parsing.
-    Misspellings are accurate to the original text produced by OCR.
-  }
-  \label{tab:phrase-corpus}
 \end{table}
 
 This method was effective because a small number of investigators generated the reports.

@@ -137,6 +137,12 @@ Metadata such as location and time discovered are also recorded into this CSV.
 
 \begin{table}
   \centering
+  \caption{
+    Functions and constants provided by the Android API on device discovery.
+    All the functions return immediately.
+    However, \texttt{getName} can return \texttt{null} until the paging step of discovery is complete.
+  }
+  \label{tab:bluetooth-device-fields}
   \begin{tabular}{@{}lcr@{}}
     \toprule
     Field & Data & Type \\ \midrule
@@ -146,12 +152,6 @@ Metadata such as location and time discovered are also recorded into this CSV.
     getType() & Get Bluetooth device type & int \\ 
     EXTRA\_RSSI & Extra field in intent for signal strength & String \\ \bottomrule
   \end{tabular}
-  \caption{
-    Functions and constants provided by the Android API on device discovery.
-    All the functions return immediately.
-    However, \texttt{getName} can return \texttt{null} until the paging step of discovery is complete.
-  }
-  \label{tab:bluetooth-device-fields}
 \end{table}
 
 \section{Collecting Information}
@@ -298,3 +298,7 @@ Thank you to Aaron and Kirill for their motivation and guidance during developme
 Thank you to Nishant for being a friend and the other half in deployment and data analysis.
 Thank you to the thousands of unnamed engineers and scientists that made this project possible.
 And finally, thank you to the lovely staff of the AZDWM for your use of our application.
+
+Chapter 3, in part, is a reprint of the material as it appears in USENIX Security 2019.
+Bhaskar, Nishant; Bland, Maxwell; Levchenko, Kirill; Schulman, Aaron, In proc. USENIX Security,
+2019. The dissertation/thesis author was a primary investigator and author of this paper. 
