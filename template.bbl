@@ -4,7 +4,8 @@
 \bibitem[817]{quickInstall}
 WFLA News~Channel 8.
 \newblock Crooks caught on camera installing credit card skimmer in longboat
-  key, December 2017.
+  key.
+\newblock \url{https://www.youtube.com/watch?v=eH4cZLVn0mA}, December 2017.
 
 \bibitem[AHB{\etalchar{+}}18]{anderson2018bottom}
 Peter Anderson, Xiaodong He, Chris Buehler, Damien Teney, Mark Johnson, Stephen
@@ -23,11 +24,20 @@ Peter Anderson, Xiaodong He, Chris Buehler, Damien Teney, Mark Johnson, Stephen
 
 \bibitem[Bla18]{dataExtractPdf}
 Maxwell Bland.
-\newblock data-extract-pdf, May 2018.
+\newblock data-extract-pdf.
+\newblock \url{https://github.com/maxwell-bland/data-extract-pdf}, May 2018.
 
 \bibitem[Bro18]{7690-290206}
 Michael Brooks.
-\newblock Inspection \#290206, March 2018.
+\newblock Inspection \#290206.
+\newblock \url{https://ctutools.azda.gov/PdfOriginals/7690-290206.PDF}, March
+  2018.
+
+\bibitem[Cor17]{43675-284675}
+Ephram Cordova.
+\newblock Inspection \#284675.
+\newblock \url{https://ctutools.azda.gov/PdfOriginals/20340-269297.PDF}, August
+  2017.
 
 \bibitem[{Cri}16]{cristea}
 {Criminal Complaint, USA v Cristea et al, 4:16cr182}.
@@ -38,31 +48,50 @@ Michael Brooks.
 
 \bibitem[Goo19]{bluetoothDevice}
 Inc. Google.
-\newblock Bluetoothdevice, 2019.
+\newblock Bluetoothdevice.
+\newblock
+  \url{https://developer.android.com/reference/android/bluetooth/BluetoothDevice},
+  2019.
 
 \bibitem[Inc03]{toUnicode-mapping-tutorial}
 Adobe~Systems Incorporated.
-\newblock Tounicode mapping file tutorial, May 2003.
+\newblock Tounicode mapping file tutorial.
+\newblock
+  \url{https://www.adobe.com/content/dam/acom/en/devnet/acrobat/pdfs/5411.ToUnicode.pdf},
+  May 2003.
 
 \bibitem[Kre14]{gang_rigged_pumps_bluetooth}
 Brian Krebs.
-\newblock Gang rigged pumps with bluetooth skimmers, January 2014.
+\newblock Gang rigged pumps with bluetooth skimmers.
+\newblock
+  \url{https://krebsonsecurity.com/2014/01/gang-rigged-pumps-with-bluetooth-skimmers/},
+  January 2014.
 
 \bibitem[Kre16]{all_about_skimmers}
 Brian Krebs.
-\newblock All about skimmers, 2016.
+\newblock All about skimmers.
+\newblock \url{https://krebsonsecurity.com/all-about-skimmers/}, 2016.
 
 \bibitem[Kre17a]{atm_shimmers}
 Brian Krebs.
-\newblock Atm shimmers target chip based cards, January 2017.
+\newblock Atm shimmers target chip based cards.
+\newblock
+  \url{https://krebsonsecurity.com/2017/01/atm-shimmers-target-chip-based-cards/},
+  January 2017.
 
 \bibitem[Kre17b]{skimmer_gsm_enabled}
 Brian Krebs.
-\newblock Gas pump skimmer sends card data via text, July 2017.
+\newblock Gas pump skimmer sends card data via text.
+\newblock
+  \url{https://krebsonsecurity.com/2017/07/gas-pump-skimmer-sends-card-data-via-text/},
+  July 2017.
 
 \bibitem[Kre18]{avoid_card_skimmers_pump}
 Brian Krebs.
-\newblock How to avoid card skimmers at the pump, June 2018.
+\newblock How to avoid card skimmers at the pump.
+\newblock
+  \url{https://krebsonsecurity.com/2018/06/how-to-avoid-card-skimmers-at-the-pump/},
+  June 2018.
 
 \bibitem[LDGS11]{lops2011content}
 Pasquale Lops, Marco De~Gemmis, and Giovanni Semeraro.
@@ -76,6 +105,12 @@ Simon~M Lucas, Alex Panaretos, Luis Sosa, Anthony Tang, Shirley Wong, and
 \newblock In {\em Seventh International Conference on Document Analysis and
   Recognition, 2003. Proceedings.}, pages 682--687. Citeseer, 2003.
 
+\bibitem[MB01]{miller2001bluetooth}
+Brent~A Miller and Chatschik Bisdikian.
+\newblock {\em Bluetooth revealed: the insider's guide to an open specification
+  for global wireless communication}.
+\newblock Prentice Hall PTR, 2001.
+
 \bibitem[{Mem}11]{hristov}
 {Memorandum and Order, USA v. Hristov et al, 1:10cr10056}.
 \newblock {US District Court for the District of Massachussetts}.
@@ -85,11 +120,15 @@ Simon~M Lucas, Alex Panaretos, Luis Sosa, Anthony Tang, Shirley Wong, and
 
 \bibitem[oWM19a]{azdwmSkimmers}
 Arizona~Department of~Weights and Measures.
-\newblock Credit card skimmers, 2019.
+\newblock Credit card skimmers.
+\newblock
+  \url{https://agriculture.az.gov/weights-measures/fueling/credit-card-skimmers},
+  2019.
 
 \bibitem[oWM19b]{azdwmLicensing}
 Arizona~Department of~Weights and Measures.
-\newblock Licensing, 2019.
+\newblock Licensing.
+\newblock \url{https://agriculture.az.gov/weights-measures/licensing}, 2019.
 
 \bibitem[Paz99]{pazzani1999framework}
 Michael~J Pazzani.
@@ -97,13 +136,23 @@ Michael~J Pazzani.
   filtering.
 \newblock {\em Artificial intelligence review}, 13(5-6):393--408, 1999.
 
+\bibitem[PBK06]{peterson2006bluetooth}
+Brian~S Peterson, Rusty~O Baldwin, and Jeffrey~P Kharoufeh.
+\newblock Bluetooth inquiry time characterization and selection.
+\newblock {\em IEEE Transactions on mobile computing}, 5(9):1173--1187, 2006.
+
 \bibitem[Rip18]{rippleshot2018fraud}
 Rippleshot.
-\newblock State of card fraud: 2018, 2018.
+\newblock State of card fraud: 2018.
+\newblock
+  \url{https://www.aba.com/Products/Endorsed/Documents/Rippleshot-State-of-Card-Fraud.pdf},
+  2018.
 
 \bibitem[S.18]{skimPlus}
 Ronnie S.
-\newblock Skim plus (bluetooth skimmer detection), December 2018.
+\newblock Skim plus (bluetooth skimmer detection).
+\newblock \url{https://play.google.com/store/apps/details?id=com.rs.skimplus},
+  December 2018.
 
 \bibitem[SBP{\etalchar{+}}19]{scaife2019rogue}
 N.~Scaife, J.~Bowers, C.~Peeters, G.~Hernandez, I.~N. Sherman, P.~Traynor, and
@@ -136,7 +185,8 @@ Nolen Scaife, Christian Peeters, and Patrick Traynor.
 \bibitem[Tec19]{flintloc}
 FlintLoc Technologies.
 \newblock Flintloc technologies: Foolproof skimming protection that pays for
-  itself in months., 2019.
+  itself in months.
+\newblock \url{http://flintloc.com/}, 2019.
 
 \bibitem[{The}17]{armenian}
 {The Newnan Times-Herald}.
@@ -145,13 +195,22 @@ FlintLoc Technologies.
   {http://times-herald.com/news/2015/06/armenian-skimmer-leader-pleads-guilty},
   July 2017.
 
+\bibitem[Tyd19]{gas_pump_seals}
+TydenBrooks.
+\newblock We care gas pump tamper-evident security labels.
+\newblock \url{https://tydenbrooks.com/gas-pump-tamper-evident-labels}, 2019.
+
 \bibitem[Wea16]{20340-269297}
 A.M. Weaver.
-\newblock Inspection \#269297, January 2016.
+\newblock Inspection \#269297.
+\newblock \url{https://ctutools.azda.gov/PdfOriginals/20340-269297.PDF},
+  January 2016.
 
 \bibitem[Wet16]{13529-268466}
 Linda Wetzel.
-\newblock Inspection \#268466, June 2016.
+\newblock Inspection \#268466.
+\newblock \url{https://ctutools.azda.gov/PdfOriginals/13529-268466.PDF}, June
+  2016.
 
 \bibitem[Won05]{wong2005potential}
 Lih~Wern Wong.

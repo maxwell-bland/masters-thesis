@@ -52,7 +52,7 @@ Most of the ``skimmer detection" work is actually back-end data analysis.
 Thus, the front-end design of a skimmer detection application is trivial. 
 The application approximates a run-of-the-mill Bluetooth scanner. 
 Bluetana consists of two pages, a scan page and settings page. 
-In total, the application has \numberofbluetanafiles files and \numberoflinesbluetana lines of code. 
+The application consists of \numberofbluetanafiles code files and \numberoflinesbluetana lines in total. 
 The primary page allows the user to choose to turn scanning on or off and show a list of nearby Bluetooth devices.
 
 The settings page allows for the user to adjust the behavior of scanning and the application. 
@@ -140,11 +140,11 @@ Metadata such as location and time discovered are also recorded into this CSV.
   \begin{tabular}{@{}lcr@{}}
     \toprule
     Field & Data & Type \\ \midrule
-    getAddress() & Returns the hardware address of this BluetoothDevice & String	 \\
-    getBluetoothClass() & Get the Bluetooth class of the remote device &  BluetoothClass	\\
-    getName() & Get the friendly Bluetooth name of the remote device & String \\
-    getType() & Get the Bluetooth device type of the remote device & int \\ 
-    EXTRA\_RSSI & Used as an optional short extra field in ACTION\_FOUND intents & String \\ \bottomrule
+    getAddress() & Returns BluetoothDevice hardware address & String	 \\
+    getBluetoothClass() & Get device Bluetooth class &  BluetoothClass	\\
+    getName() & Get device Bluetooth name & String \\
+    getType() & Get Bluetooth device type & int \\ 
+    EXTRA\_RSSI & Extra field in intent for signal strength & String \\ \bottomrule
   \end{tabular}
   \caption{
     Functions and constants provided by the Android API on device discovery.
@@ -173,7 +173,7 @@ This increases the number of records collected for suspicious devices.
 
 \begin{figure}
   \centering
-  \includegraphics[width=\linewidth]{pics/bluetana-highlight-screenshot.png}
+  \includegraphics[width=4.25in]{pics/bluetana-highlight-screenshot.png}
   \caption{
     Screenshot of Bluetana's suspicious device highlighting.
     Highly suspicious devices are highlighted red.
@@ -189,13 +189,13 @@ Skimmers will have a high signal strength close to a gas pump.
 
 \begin{figure}
   \centering
-  \includegraphics[width=\linewidth]{pics/heatmap-localization.png}
+  \includegraphics[width=4.25in]{pics/heatmap-localization.pdf}
   \caption{
     Screenshot comparing Bluetana's localization data between a skimmer and non-skimmer.
     Skimmers, unlike other devices, have much higher signal strength near the gas pump.
     Sensitive data has been redacted.
   }
-  \label{fig:bluetana-website}
+  \label{fig:heatmap-localization}
 \end{figure}
 While other devices like car stereos may as well, this is less likely.
 
@@ -221,34 +221,32 @@ These were integrated into a web interface used in retroactive analysis
 The application also has settings to reduce the Bluetooth scan time.
 This helps to speed up device localization and records collected.
 Prior research demonstrates a majority of devices are detected within 10 seconds of a Bluetooth scan
-\cite{}.
+\cite{peterson2006bluetooth}.
 However, this has two trade-offs.
 The first being that the application may not scan both Bluetooth frequency trains.
 These trains are used by devices during discovery to minimize signal conflicts
-\cite{}.
 The second is that it prevents the device from performing some of the paging discovery stage.
 This stage is used for transferring the device name to the scanning device
-\cite{}.
+\cite{miller2001bluetooth}.
 Due to these complications, inspectors phones were set to the android default scan time at startup.
 
 \subsection{Suspicious Device Flagging}\label{sec:skimmer-flagging-workflow}
 
 We designed Bluetana's method of highlighting suspicious devices based upon discovered skimmers.
 Initially the hit-list contained information from the internet and existing applications
-\cite{}.
 It then became clear inspectors were not finding Bluetooth Low Energy skimmers. 
 All the discovered skimmers also had an unset Bluetooth device class
 \footnote{A set of bytes used to indicate what a device is (phone, stereo, etc.).}
 and uncustomized MAC addresses.
 These features alone were effective in finding skimmers
-(Figure~\ref{plot-of-class-and-MAC-filtered}).
+(Figure~\ref{fig:plot-of-class-and-MAC-filtered}).
 However, we also performed edit-distance clustering on the device names. 
 This revealed known products and common default names. 
 Figure~\ref{fig:flagging-flowchart} presents a flowchart of the current flagging workflow.
 
 \begin{figure}
   \centering
-  \includegraphics[width=\linewidth]{plots/plot-of-class-and-MAC-filtered.png}
+  \includegraphics[width=4.25in]{plots/plot-of-class-and-MAC-filtered.png}
   \caption{
     Plot of the distribution of skimmers in the last stage of flagging.
     After MAC, Device class, and Bluetooth classic filtering few devices remain.
@@ -258,7 +256,7 @@ Figure~\ref{fig:flagging-flowchart} presents a flowchart of the current flagging
 
 \begin{figure}
   \centering
-  \includegraphics[width=\linewidth]{plots/flagging-flowchart.png}
+  \includegraphics[width=\linewidth]{plots/flagging-flowchart.pdf}
   \caption{
     Decision tree for determining how Bluetana highlights a device.
     Orange and red devices suggest the performance of localization or manual inspection.
